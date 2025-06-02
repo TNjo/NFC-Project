@@ -23,12 +23,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserFn = exports.addUserFn = void 0;
-const functions = __importStar(require("firebase-functions"));
-const addUser_1 = require("./handlers/addUser");
-const getUser_1 = require("./handlers/getUser");
+exports.getUserDetailsFn = exports.addUserDetailsFn = void 0;
 const admin = __importStar(require("firebase-admin"));
-admin.initializeApp();
-exports.addUserFn = functions.https.onRequest(addUser_1.addUser);
-exports.getUserFn = functions.https.onRequest(getUser_1.getUser);
+// Only initialize once
+if (!admin.apps.length) {
+    admin.initializeApp();
+}
+const functions = __importStar(require("firebase-functions"));
+const addUserDetails_1 = require("./handlers/addUserDetails");
+const getUserDetails_1 = require("./handlers/getUserDetails");
+exports.addUserDetailsFn = functions.https.onRequest(addUserDetails_1.addUserDetails);
+exports.getUserDetailsFn = functions.https.onRequest(getUserDetails_1.getUserDetails);
 //# sourceMappingURL=index.js.map

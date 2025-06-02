@@ -1,9 +1,12 @@
-import * as functions from 'firebase-functions';
-import { addUser } from './handlers/addUser';
-import { getUser } from './handlers/getUser';
 import * as admin from 'firebase-admin';
+// Only initialize once
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+import * as functions from 'firebase-functions';
+import { addUserDetails } from './handlers/addUserDetails';
+import { getUserDetails } from './handlers/getUserDetails';
 
-admin.initializeApp();
 
-export const addUserFn = functions.https.onRequest(addUser);
-export const getUserFn = functions.https.onRequest(getUser);
+export const addUserDetailsFn = functions.https.onRequest(addUserDetails);
+export const getUserDetailsFn = functions.https.onRequest(getUserDetails);
