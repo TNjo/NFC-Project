@@ -553,7 +553,7 @@ export default function BusinessCard() {
                     Save Contact?
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    Would you like to save {user?.fullName || 'this contact'} to your phone's contacts?
+                    Would you like to save {user?.fullName || 'this contact'} to your phone&apos;s contacts?
                   </p>
                 </div>
 
