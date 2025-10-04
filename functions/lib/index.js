@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserDetailsFn = exports.addUserDetailsFn = void 0;
+exports.verifyAdminTokenFn = exports.adminLoginFn = exports.createAdminFn = exports.trackPageViewFn = exports.getAnalyticsFn = exports.getUserByUrlFn = exports.generateUserUrlFn = exports.getAllUsersFn = exports.deleteUserFn = exports.updateUserFn = exports.addUserFn = exports.getUserDetailsFn = exports.addUserDetailsFn = void 0;
 const admin = __importStar(require("firebase-admin"));
 // Only initialize once
 if (!admin.apps.length) {
@@ -32,6 +32,28 @@ if (!admin.apps.length) {
 const functions = __importStar(require("firebase-functions"));
 const addUserDetails_1 = require("./handlers/addUserDetails");
 const getUserDetails_1 = require("./handlers/getUserDetails");
+const addUser_1 = require("./handlers/addUser");
+const updateUser_1 = require("./handlers/updateUser");
+const deleteUser_1 = require("./handlers/deleteUser");
+const getAllUsers_1 = require("./handlers/getAllUsers");
+const generateUserUrl_1 = require("./handlers/generateUserUrl");
+const getUserByUrl_1 = require("./handlers/getUserByUrl");
+const getAnalytics_1 = require("./handlers/getAnalytics");
+const trackPageView_1 = require("./handlers/trackPageView");
+const adminAuth_1 = require("./handlers/adminAuth");
+// User Management Functions
 exports.addUserDetailsFn = functions.https.onRequest(addUserDetails_1.addUserDetails);
 exports.getUserDetailsFn = functions.https.onRequest(getUserDetails_1.getUserDetails);
+exports.addUserFn = functions.https.onRequest(addUser_1.addUser);
+exports.updateUserFn = functions.https.onRequest(updateUser_1.updateUser);
+exports.deleteUserFn = functions.https.onRequest(deleteUser_1.deleteUser);
+exports.getAllUsersFn = functions.https.onRequest(getAllUsers_1.getAllUsers);
+exports.generateUserUrlFn = functions.https.onRequest(generateUserUrl_1.generateUserUrl);
+exports.getUserByUrlFn = functions.https.onRequest(getUserByUrl_1.getUserByUrl);
+exports.getAnalyticsFn = functions.https.onRequest(getAnalytics_1.getAnalytics);
+exports.trackPageViewFn = functions.https.onRequest(trackPageView_1.trackPageView);
+// Authentication Functions
+exports.createAdminFn = functions.https.onRequest(adminAuth_1.createAdmin);
+exports.adminLoginFn = functions.https.onRequest(adminAuth_1.adminLogin);
+exports.verifyAdminTokenFn = functions.https.onRequest(adminAuth_1.verifyAdminToken);
 //# sourceMappingURL=index.js.map
