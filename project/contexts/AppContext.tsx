@@ -35,7 +35,7 @@ const AppContext = createContext<{
   state: AppState;
   dispatch: React.Dispatch<AppAction>;
   addCardholder: (cardholder: Omit<Cardholder, 'id' | 'createdAt' | 'updatedAt' | 'publicUrl'>) => void;
-  updateCardholder: (cardholder: Cardholder) => void;
+  updateCardholder: (id: string, userData: any) => Promise<void>;
   deleteCardholder: (id: string) => Promise<void>;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -195,10 +195,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'ADD_CARDHOLDER', payload: cardholder });
   };
 
-  const updateCardholder = (cardholder: Cardholder) => {
-    const updated = { ...cardholder, updatedAt: new Date().toISOString() };
-    dispatch({ type: 'UPDATE_CARDHOLDER', payload: updated });
-  };
+  const updateCardholder = useCallback(async (id: string, userData: any) => {
+    try {
+      // Call API to update user
+      const response = await apiMethods.updateUser(id, userData);
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          // Refresh users to get updated data
+          await fetchUsers();
+        } else {
+          throw new Error(result.error || 'Failed to update user');
+        }
+      } else {
+        throw new Error('Failed to update user');
+      }
+    } catch (error) {
+      console.error('Error updating cardholder:', error);
+      throw error; // Re-throw so the component can handle it
+    }
+  }, [fetchUsers]);
 
   const deleteCardholder = useCallback(async (id: string) => {
     try {

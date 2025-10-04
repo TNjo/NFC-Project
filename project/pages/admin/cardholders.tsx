@@ -30,12 +30,12 @@ export default function CardholderList() {
     }
   }, [authState.isInitialized, authState.isAuthenticated, router]);
 
-  // Fetch users on mount if needed (only if cardholders array is empty)
+  // Fetch users when the page loads and whenever we navigate to it
   useEffect(() => {
-    if (authState.isAuthenticated && state.cardholders.length === 0 && !state.isLoading) {
+    if (authState.isAuthenticated && router.isReady && !state.isLoading) {
       fetchUsers();
     }
-  }, [authState.isAuthenticated, state.cardholders.length, state.isLoading, fetchUsers]);
+  }, [authState.isAuthenticated, router.isReady, router.pathname, fetchUsers]);
 
   // Filter cardholders based on search term
   const filteredCardholders = state.cardholders.filter(
