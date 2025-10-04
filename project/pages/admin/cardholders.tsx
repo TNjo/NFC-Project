@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { Header } from '../../components/Layout/Header';
 import { Sidebar } from '../../components/Layout/Sidebar';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { Cardholder } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
@@ -18,7 +19,9 @@ export default function CardholderList() {
   
   const [searchTerm, setSearchTerm] = useState('');
   const [sidebarOpen] = useState(false);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [cardholderToDelete, setCardholderToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -43,20 +46,30 @@ export default function CardholderList() {
       cardholder.jobTitle.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleDelete = async (id: string, name: string) => {
-    if (deleteConfirmId === id) {
-      try {
-        await deleteCardholder(id);
-        showSuccess('Deleted Successfully', `${name} has been removed`);
-        setDeleteConfirmId(null);
-      } catch {
-        showError('Delete Failed', 'Could not delete cardholder. Please try again.');
-      }
-    } else {
-      setDeleteConfirmId(id);
-      // Reset confirmation after 3 seconds
-      setTimeout(() => setDeleteConfirmId(null), 3000);
+  const handleDeleteClick = (id: string, name: string) => {
+    setCardholderToDelete({ id, name });
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!cardholderToDelete) return;
+    
+    setIsDeleting(true);
+    try {
+      await deleteCardholder(cardholderToDelete.id);
+      showSuccess('Deleted Successfully', `${cardholderToDelete.name} has been removed`);
+      setDeleteDialogOpen(false);
+      setCardholderToDelete(null);
+    } catch {
+      showError('Delete Failed', 'Could not delete cardholder. Please try again.');
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setCardholderToDelete(null);
   };
 
   const handleEdit = (cardholder: Cardholder) => {
@@ -234,13 +247,9 @@ export default function CardholderList() {
                                     <Edit className="w-4 h-4" />
                                   </button>
                                   <button
-                                    onClick={() => handleDelete(cardholder.id, cardholder.name)}
-                                    className={`p-2 rounded-lg transition-colors ${
-                                      deleteConfirmId === cardholder.id
-                                        ? 'bg-red-600 text-white hover:bg-red-700'
-                                        : 'text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20'
-                                    }`}
-                                    title={deleteConfirmId === cardholder.id ? 'Click again to confirm' : 'Delete Cardholder'}
+                                    onClick={() => handleDeleteClick(cardholder.id, cardholder.name)}
+                                    className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                    title="Delete Cardholder"
                                   >
                                     <Trash2 className="w-4 h-4" />
                                   </button>
@@ -347,12 +356,8 @@ export default function CardholderList() {
                             <span className="text-sm font-medium">Edit</span>
                           </button>
                           <button
-                            onClick={() => handleDelete(cardholder.id, cardholder.name)}
-                            className={`px-3 py-2 rounded-lg transition-colors ${
-                              deleteConfirmId === cardholder.id
-                                ? 'bg-red-600 text-white hover:bg-red-700'
-                                : 'bg-red-50 dark:bg-red-900/20 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30'
-                            }`}
+                            onClick={() => handleDeleteClick(cardholder.id, cardholder.name)}
+                            className="px-3 py-2 rounded-lg transition-colors bg-red-50 dark:bg-red-900/20 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -382,6 +387,19 @@ export default function CardholderList() {
             </main>
           </div>
         </div>
+
+        {/* Delete Confirmation Dialog */}
+        <ConfirmDialog
+          isOpen={deleteDialogOpen}
+          onClose={handleDeleteCancel}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Cardholder"
+          message={`Are you sure you want to delete ${cardholderToDelete?.name}? This action cannot be undone.`}
+          confirmText="Delete"
+          cancelText="Cancel"
+          type="danger"
+          loading={isDeleting}
+        />
       </div>
     </>
   );
