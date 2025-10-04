@@ -18,10 +18,13 @@ export default function CardholderList() {
   const router = useRouter();
   
   const [searchTerm, setSearchTerm] = useState('');
-  const [sidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [cardholderToDelete, setCardholderToDelete] = useState<{ id: string; name: string } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const closeSidebar = () => setSidebarOpen(false);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -99,12 +102,12 @@ export default function CardholderList() {
         <title>Cardholders - NFC Digital Profile</title>
       </Head>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Header />
-        <div className="flex">
-          <Sidebar isOpen={sidebarOpen} />
+        <Header onMenuClick={toggleSidebar} />
+        <div className="pt-16">
+          <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
           
-          <div className="flex-1 lg:ml-5">
-            <main className="p-6 min-h-screen">
+          <div className="lg:ml-64">
+            <main className="p-3 sm:p-4 md:p-6 min-h-screen">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

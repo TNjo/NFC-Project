@@ -63,29 +63,29 @@ export default function Login() {
           transition={{ duration: 0.6 }}
           className="max-w-md w-full"
         >
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
-            <div className="text-center mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
+            <div className="text-center mb-6 sm:mb-8">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center mx-auto mb-4"
+                className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4"
               >
-                {<Users className="w-8 h-8 text-white" />}
+                {<Users className="w-7 h-7 sm:w-8 sm:h-8 text-white" />}
               </motion.div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
                 Admin Login
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 Sign in to manage your NFC digital profiles
               </p>
             </div>
 
 
             {/* Email/Password Form */}
-            <form onSubmit={handleEmailLogin} className="space-y-6">
+            <form onSubmit={handleEmailLogin} className="space-y-4 sm:space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Email Address
                 </label>
                 <input
@@ -93,13 +93,13 @@ export default function Login() {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="Enter your email"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Password
                 </label>
                 <input
@@ -107,7 +107,7 @@ export default function Login() {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="Enter your password"
                 />
               </div>
@@ -125,7 +125,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={isLoading || state.isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-3 rounded-lg transition-colors font-medium flex items-center justify-center space-x-2"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-2.5 sm:py-3 rounded-lg transition-colors font-medium flex items-center justify-center space-x-2 text-sm sm:text-base"
               >
                 <LogIn className="w-4 h-4" />
                 <span>
@@ -135,21 +135,21 @@ export default function Login() {
             </form>
 
             {(
-              <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  <KeyRound className="w-4 h-4 inline mr-2" />
+              <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <KeyRound className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-2" />
                   Authentication Methods:
                 </h3>
-                <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 space-y-2">
                   <div className="flex items-start space-x-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
                     <div>
                       <p className="font-medium">Email & Password</p>
                       <p className="text-xs">Secure login with email and password</p>
                     </div>
                   </div>
                 </div>
-                <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-700">
+                <div className="mt-2.5 sm:mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-700">
                   <p className="text-xs font-medium text-yellow-800 dark:text-yellow-200 mb-1">
                     🔒 Admin Access Only
                   </p>

@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Shield, UserPlus, AlertTriangle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Shield, UserPlus, AlertTriangle, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Head from 'next/head';
 import { apiMethods } from '../config/api';
 import { useRouter } from 'next/router';
 
 // This is a secure setup page that should only be accessible during initial setup
+// CURRENTLY DISABLED FOR SECURITY
 export default function AdminSetup() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -16,6 +17,14 @@ export default function AdminSetup() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isDisabled] = useState(true); // Page is disabled for security
+
+  // Redirect to login page immediately
+  useEffect(() => {
+    if (isDisabled) {
+      router.push('/login');
+    }
+  }, [isDisabled, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +49,42 @@ export default function AdminSetup() {
       setIsLoading(false);
     }
   };
+
+  // Show disabled page message
+  if (isDisabled) {
+    return (
+      <>
+        <Head>
+          <title>Page Disabled - NFC Digital Profile</title>
+        </Head>
+        <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-md w-full text-center"
+          >
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
+              <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock className="w-8 h-8 text-white" />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Page Disabled
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                This admin setup page has been disabled for security purposes. Please contact your system administrator.
+              </p>
+              <button
+                onClick={() => router.push('/login')}
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+              >
+                Go to Login
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </>
+    );
+  }
 
   if (success) {
     return (

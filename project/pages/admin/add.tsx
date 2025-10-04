@@ -30,9 +30,12 @@ export default function AddCardholderForm() {
   const { state: authState } = useAuth();
   const { showSuccess, showError } = useToast();
   const router = useRouter();
-  const [sidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const closeSidebar = () => setSidebarOpen(false);
   
   // Comprehensive form data matching Firebase function schema - moved before early returns
   const [formData, setFormData] = useState({
@@ -154,12 +157,12 @@ export default function AddCardholderForm() {
         <title>Add Cardholder - NFC Digital Profile</title>
       </Head>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
-          <Header />
-          <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-            <Sidebar isOpen={sidebarOpen} />
+          <Header onMenuClick={toggleSidebar} />
+          <div className="pt-16 min-h-screen bg-gray-50 dark:bg-gray-900">
+            <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
             
-            <div className="flex-1 flex flex-col overflow-hidden lg:ml-5">
-              <main className="flex-1 overflow-y-auto p-4 pl-2">
+            <div className="lg:ml-64">
+              <main className="p-3 sm:p-4 md:p-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
