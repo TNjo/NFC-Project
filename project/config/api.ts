@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
   // Analytics Functions
   GET_ANALYTICS: 'https://getanalyticsfn-uupdjznjhq-uc.a.run.app',
   TRACK_PAGE_VIEW: 'https://trackpageviewfn-uupdjznjhq-uc.a.run.app',
+  TRACK_CONTACT_SAVE: 'https://us-central1-burjcode-profile-dev.cloudfunctions.net/trackContactSaveFn',
   
   // Authentication Functions
   CREATE_ADMIN: 'https://createadminfn-uupdjznjhq-uc.a.run.app',
@@ -121,6 +122,14 @@ export const apiMethods = {
     return apiRequest(API_ENDPOINTS.TRACK_PAGE_VIEW, {
       method: 'POST',
       body: JSON.stringify({ userId, slug, metadata }),
+    });
+  },
+
+  // Track contact save
+  trackContactSave: async (userId: string, metadata?: any) => {
+    return apiRequest(API_ENDPOINTS.TRACK_CONTACT_SAVE, {
+      method: 'POST',
+      body: JSON.stringify({ userId, metadata }),
     });
   },
 

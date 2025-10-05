@@ -138,10 +138,28 @@ export default function BusinessCard() {
     }
   };
 
-  const handleAutoSave = () => {
+  const handleAutoSave = async () => {
     console.log('💾 User clicked Save to Contacts');
+    console.log('🔍 User object:', user);
+    console.log('🆔 User ID:', user?.id);
+    
     generateVCard();
     setShowSavePrompt(false);
+    
+    // Track contact save analytics
+    if (user?.id) {
+      try {
+        console.log('📤 Calling trackContactSave with userId:', user.id);
+        const response = await apiMethods.trackContactSave(user.id);
+        const result = await response.json();
+        console.log('✅ Contact save response:', result);
+      } catch (error) {
+        console.error('❌ Failed to track contact save:', error);
+        // Don't block the save action if tracking fails
+      }
+    } else {
+      console.warn('⚠️ No user ID available, cannot track contact save');
+    }
   };
 
   const handleDismissPrompt = () => {
@@ -498,7 +516,27 @@ export default function BusinessCard() {
                   className="flex space-x-3 pt-4 border-t border-gray-200 dark:border-gray-600"
                 >
                   <button
-                    onClick={generateVCard}
+                    onClick={async () => {
+                      console.log('💾 Save Contact button clicked');
+                      console.log('🔍 User object:', user);
+                      console.log('🆔 User ID:', user?.id);
+                      
+                      generateVCard();
+                      
+                      // Track contact save
+                      if (user?.id) {
+                        try {
+                          console.log('📤 Calling trackContactSave with userId:', user.id);
+                          const response = await apiMethods.trackContactSave(user.id);
+                          const result = await response.json();
+                          console.log('✅ Contact save response:', result);
+                        } catch (error) {
+                          console.error('❌ Failed to track contact save:', error);
+                        }
+                      } else {
+                        console.warn('⚠️ No user ID available, cannot track contact save');
+                      }
+                    }}
                     className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
                   >
                     <Download className="w-5 h-5" />

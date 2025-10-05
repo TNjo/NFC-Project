@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Edit, Trash2, Eye, Search, User, Phone, Mail, Building2, Calendar, Loader2, Clock } from 'lucide-react';
+import { Edit, Trash2, Eye, Search, User, Phone, Mail, Building2, Calendar, Loader2, Clock, Download } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
@@ -159,7 +159,7 @@ export default function CardholderList() {
                             Company
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Views
+                            Analytics
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Created
@@ -215,12 +215,20 @@ export default function CardholderList() {
                                 {cardholder.company}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center space-x-2">
-                                  <div className="flex items-center space-x-1 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                                    <Eye className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                                    <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                                      {cardholder.totalViews?.toLocaleString() || '0'}
-                                    </span>
+                                <div className="flex flex-col space-y-2">
+                                  <div className="flex items-center space-x-2">
+                                    <div className="flex items-center space-x-1 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                      <Eye className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                      <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                                        {cardholder.totalViews?.toLocaleString() || '0'}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center space-x-1 px-3 py-1.5 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                                      <Download className="w-4 h-4 text-green-600 dark:text-green-400" />
+                                      <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                                        {cardholder.totalContactSaves?.toLocaleString() || '0'}
+                                      </span>
+                                    </div>
                                   </div>
                                   {cardholder.lastViewedAt && (
                                     <div className="text-xs text-gray-500 dark:text-gray-400" title={`Last viewed: ${new Date(cardholder.lastViewedAt).toLocaleString()}`}>
@@ -328,17 +336,24 @@ export default function CardholderList() {
                             <Phone className="w-4 h-4 mr-2" />
                             <span>{cardholder.phone}</span>
                           </div>
-                          <div className="flex items-center justify-between">
+                          <div className="flex flex-col space-y-2">
                             <div className="flex items-center text-sm text-gray-500 dark:text-gray-500">
                               <Calendar className="w-4 h-4 mr-2" />
                               <span>{new Date(cardholder.createdAt).toLocaleDateString()}</span>
                             </div>
-                            <div className="flex items-center space-x-1 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                              <Eye className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                                {cardholder.totalViews?.toLocaleString() || '0'}
-                              </span>
-                              <span className="text-xs text-gray-500 dark:text-gray-400">views</span>
+                            <div className="flex items-center space-x-2">
+                              <div className="flex items-center space-x-1 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                <Eye className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                                  {cardholder.totalViews?.toLocaleString() || '0'}
+                                </span>
+                              </div>
+                              <div className="flex items-center space-x-1 px-2 py-1 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                                <Download className="w-4 h-4 text-green-600 dark:text-green-400" />
+                                <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                                  {cardholder.totalContactSaves?.toLocaleString() || '0'}
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>

@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyAdminTokenFn = exports.adminLoginFn = exports.createAdminFn = exports.trackPageViewFn = exports.getAnalyticsFn = exports.getUserByUrlFn = exports.generateUserUrlFn = exports.getAllUsersFn = exports.deleteUserFn = exports.updateUserFn = exports.addUserFn = exports.getUserDetailsFn = exports.addUserDetailsFn = void 0;
+exports.verifyAdminTokenFn = exports.adminLoginFn = exports.createAdminFn = exports.trackContactSaveFn = exports.trackPageViewFn = exports.getAnalyticsFn = exports.getUserByUrlFn = exports.generateUserUrlFn = exports.getAllUsersFn = exports.deleteUserFn = exports.updateUserFn = exports.addUserFn = exports.getUserDetailsFn = exports.addUserDetailsFn = void 0;
 const admin = __importStar(require("firebase-admin"));
 // Only initialize once
 if (!admin.apps.length) {
@@ -40,6 +40,7 @@ const generateUserUrl_1 = require("./handlers/generateUserUrl");
 const getUserByUrl_1 = require("./handlers/getUserByUrl");
 const getAnalytics_1 = require("./handlers/getAnalytics");
 const trackPageView_1 = require("./handlers/trackPageView");
+const trackContactSave_1 = require("./handlers/trackContactSave");
 const adminAuth_1 = require("./handlers/adminAuth");
 // User Management Functions
 exports.addUserDetailsFn = functions.https.onRequest(addUserDetails_1.addUserDetails);
@@ -52,6 +53,7 @@ exports.generateUserUrlFn = functions.https.onRequest(generateUserUrl_1.generate
 exports.getUserByUrlFn = functions.https.onRequest(getUserByUrl_1.getUserByUrl);
 exports.getAnalyticsFn = functions.https.onRequest(getAnalytics_1.getAnalytics);
 exports.trackPageViewFn = functions.https.onRequest(trackPageView_1.trackPageView);
+exports.trackContactSaveFn = functions.https.onRequest(trackContactSave_1.trackContactSave);
 // Authentication Functions
 exports.createAdminFn = functions.https.onRequest(adminAuth_1.createAdmin);
 exports.adminLoginFn = functions.https.onRequest(adminAuth_1.adminLogin);

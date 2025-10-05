@@ -9,7 +9,11 @@ const corsOptions = {
     'http://localhost:3000',
     'http://localhost:3001', 
     'https://burjcode-profile-dev.web.app',
-    'https://burjcode-profile-dev.firebaseapp.com'
+    'https://burjcode-profile-dev.firebaseapp.com',
+    'https://nfc-project-opal.vercel.app',
+    'https://digitalprofile.burjcodetech.com',
+    'http://digitalprofile.burjcodetech.com',
+    /https:\/\/nfc-project.*\.vercel\.app$/
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [

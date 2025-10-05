@@ -14,6 +14,7 @@ import { generateUserUrl } from './handlers/generateUserUrl';
 import { getUserByUrl } from './handlers/getUserByUrl';
 import { getAnalytics } from './handlers/getAnalytics';
 import { trackPageView } from './handlers/trackPageView';
+import { trackContactSave } from './handlers/trackContactSave';
 import { createAdmin, adminLogin, verifyAdminToken } from './handlers/adminAuth';
 
 
@@ -28,6 +29,7 @@ export const generateUserUrlFn = functions.https.onRequest(generateUserUrl);
 export const getUserByUrlFn = functions.https.onRequest(getUserByUrl);
 export const getAnalyticsFn = functions.https.onRequest(getAnalytics);
 export const trackPageViewFn = functions.https.onRequest(trackPageView);
+export const trackContactSaveFn = functions.https.onRequest(trackContactSave);
 
 // Authentication Functions
 export const createAdminFn = functions.https.onRequest(createAdmin);

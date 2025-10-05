@@ -100,6 +100,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       publicUrl: user.publicUrl || `/profile/${user.id}`,
       totalViews: user.totalViews || 0,
       lastViewedAt: user.lastViewedAt?.toDate ? user.lastViewedAt.toDate().toISOString() : undefined,
+      totalContactSaves: user.totalContactSaves || 0,
+      lastContactSavedAt: user.lastContactSavedAt?.toDate ? user.lastContactSavedAt.toDate().toISOString() : undefined,
       createdAt: user.createdAt?.toDate ? user.createdAt.toDate().toISOString() : new Date().toISOString(),
       updatedAt: user.updatedAt?.toDate ? user.updatedAt.toDate().toISOString() : new Date().toISOString(),
     };

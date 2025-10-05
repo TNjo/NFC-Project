@@ -18,6 +18,8 @@ export interface Cardholder {
   publicUrl: string;
   totalViews?: number;
   lastViewedAt?: string;
+  totalContactSaves?: number;
+  lastContactSavedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -64,6 +66,8 @@ export interface ComprehensiveUser {
   // Analytics fields
   totalViews?: number;
   lastViewedAt?: any; // Firebase Timestamp
+  totalContactSaves?: number;
+  lastContactSavedAt?: any; // Firebase Timestamp
   
   // System fields
   createdAt: any; // Firebase Timestamp
