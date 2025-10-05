@@ -192,7 +192,6 @@ export const shareVCard = async (contact: ContactData): Promise<boolean> => {
 
     return true;
   } catch (error) {
-    console.error('Error sharing vCard:', error);
     return false;
   }
 };

@@ -38,7 +38,6 @@ export default function BusinessCard() {
       const matches = pathname.match(/\/card\/([^/]+)/);
       if (matches && matches[1]) {
         const extractedCardId = matches[1];
-        console.log('🔍 Extracted cardId from URL:', extractedCardId);
         setCardId(extractedCardId);
       }
     }
@@ -46,15 +45,9 @@ export default function BusinessCard() {
 
   useEffect(() => {
     if (cardId) {
-      console.log('📡 Fetching card data for:', cardId);
       fetchUserData(cardId);
     }
   }, [cardId]);
-
-  // Debug: Log when showSavePrompt changes
-  useEffect(() => {
-    console.log('🔔 showSavePrompt state changed:', showSavePrompt);
-  }, [showSavePrompt]);
 
   const fetchUserData = async (slug: string) => {
     try {
@@ -72,16 +65,13 @@ export default function BusinessCard() {
         setUser(result.data);
         
         // Show save prompt on every visit after a short delay
-        console.log('⏱️ Setting timeout to show save prompt in 1 second...');
         setTimeout(() => {
-          console.log('✅ Showing save prompt now!');
           setShowSavePrompt(true);
         }, 1000);
       } else {
         throw new Error('User not found');
       }
     } catch (err) {
-      console.error('Error fetching user:', err);
       setError(err instanceof Error ? err.message : 'Failed to load user data');
     } finally {
       setLoading(false);
@@ -139,31 +129,20 @@ export default function BusinessCard() {
   };
 
   const handleAutoSave = async () => {
-    console.log('💾 User clicked Save to Contacts');
-    console.log('🔍 User object:', user);
-    console.log('🆔 User ID:', user?.id);
-    
     generateVCard();
     setShowSavePrompt(false);
     
     // Track contact save analytics
     if (user?.id) {
       try {
-        console.log('📤 Calling trackContactSave with userId:', user.id);
-        const response = await apiMethods.trackContactSave(user.id);
-        const result = await response.json();
-        console.log('✅ Contact save response:', result);
+        await apiMethods.trackContactSave(user.id);
       } catch (error) {
-        console.error('❌ Failed to track contact save:', error);
         // Don't block the save action if tracking fails
       }
-    } else {
-      console.warn('⚠️ No user ID available, cannot track contact save');
     }
   };
 
   const handleDismissPrompt = () => {
-    console.log('❌ User dismissed the save prompt');
     setShowSavePrompt(false);
   };
 
@@ -517,24 +496,15 @@ export default function BusinessCard() {
                 >
                   <button
                     onClick={async () => {
-                      console.log('💾 Save Contact button clicked');
-                      console.log('🔍 User object:', user);
-                      console.log('🆔 User ID:', user?.id);
-                      
                       generateVCard();
                       
                       // Track contact save
                       if (user?.id) {
                         try {
-                          console.log('📤 Calling trackContactSave with userId:', user.id);
-                          const response = await apiMethods.trackContactSave(user.id);
-                          const result = await response.json();
-                          console.log('✅ Contact save response:', result);
+                          await apiMethods.trackContactSave(user.id);
                         } catch (error) {
-                          console.error('❌ Failed to track contact save:', error);
+                          // Silent fail
                         }
-                      } else {
-                        console.warn('⚠️ No user ID available, cannot track contact save');
                       }
                     }}
                     className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
@@ -560,7 +530,7 @@ export default function BusinessCard() {
               className="text-center"
             >
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Powered by Burj Code Technologies
+                Powered by BurjCode Technologies
               </p>
             </motion.div>
           </motion.div>

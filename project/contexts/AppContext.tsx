@@ -122,11 +122,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           const legacyCardholders = result.users.map(convertToCardholder);
           dispatch({ type: 'SET_CARDHOLDERS', payload: legacyCardholders });
         }
-      } else {
-        console.error('Failed to fetch users:', response.statusText);
       }
     } catch (error) {
-      console.error('Error fetching users:', error);
+      // Silent fail
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
@@ -141,11 +139,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (result.success && result.data) {
           dispatch({ type: 'SET_ANALYTICS', payload: result.data });
         }
-      } else {
-        console.error('Failed to fetch analytics:', response.statusText);
       }
     } catch (error) {
-      console.error('Error fetching analytics:', error);
+      // Silent fail
     }
   }, []);
 
@@ -214,7 +210,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         throw new Error('Failed to update user');
       }
     } catch (error) {
-      console.error('Error updating cardholder:', error);
       throw error; // Re-throw so the component can handle it
     }
   }, [fetchUsers]);
@@ -236,7 +231,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         throw new Error('Failed to delete user');
       }
     } catch (error) {
-      console.error('Error deleting cardholder:', error);
       throw error; // Re-throw so the component can handle it
     }
   }, []);

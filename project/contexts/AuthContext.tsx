@@ -120,9 +120,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict'
       });
-      console.log('✅ User data stored successfully');
     } catch (error) {
-      console.error('❌ Failed to store user data:', error);
+      // Silent fail
     }
   };
 
@@ -131,9 +130,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.removeItem(USER_KEY);
       Cookies.remove(TOKEN_KEY);
-      console.log('✅ User data cleared successfully');
     } catch (error) {
-      console.error('❌ Failed to clear user data:', error);
+      // Silent fail
     }
   };
 
@@ -157,16 +155,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const verifyToken = async (): Promise<boolean> => {
     const token = getToken();
     if (!token) {
-      console.log('⚠️ No token found, user not authenticated');
       return false;
     }
 
     try {
-      console.log('🔍 Verifying token...');
       const response = await apiMethods.verifyAdminToken(token);
       
       if (!response.ok) {
-        console.log('❌ Token verification failed - HTTP error:', response.status);
         clearUserData();
         dispatch({ type: 'LOGOUT' });
         return false;
@@ -175,7 +170,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const result = await response.json();
 
       if (result.success && result.valid) {
-        console.log('✅ Token verified successfully');
         const userData: AdminUser = {
           ...result.data,
           token,
@@ -185,13 +179,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         storeUserData(userData);
         return true;
       } else {
-        console.log('❌ Token verification failed - Invalid token');
         clearUserData();
         dispatch({ type: 'LOGOUT' });
         return false;
       }
     } catch (error) {
-      console.error('❌ Token verification error:', error);
       clearUserData();
       dispatch({ type: 'LOGOUT' });
       return false;
@@ -204,12 +196,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_ERROR', payload: null });
 
     try {
-      console.log('🔐 Attempting email login...');
       const response = await apiMethods.adminLogin({ email, password });
       
       if (!response.ok) {
-        const errorText = await response.text();
-        console.log('❌ Login failed - HTTP error:', response.status, errorText);
         dispatch({ type: 'SET_ERROR', payload: 'Login failed. Please check your credentials.' });
         return false;
       }
@@ -217,7 +206,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const result = await response.json();
 
       if (result.success && result.data) {
-        console.log('✅ Email login successful');
         const userData: AdminUser = {
           ...result.data,
           authProvider: 'email' as const
@@ -227,12 +215,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         storeUserData(userData);
         return true;
       } else {
-        console.log('❌ Login failed:', result.error);
         dispatch({ type: 'SET_ERROR', payload: result.error || 'Login failed' });
         return false;
       }
     } catch (error) {
-      console.error('❌ Email login error:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Network error during login. Please try again.' });
       return false;
     }
@@ -248,8 +234,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Logout with complete cleanup
   const logout = () => {
-    console.log('🚪 Logging out user...');
-    
     // Clear authentication state
     dispatch({ type: 'LOGOUT' });
     
@@ -258,24 +242,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     // Sign out from Firebase (cleanup for any remaining sessions)
     if (auth.currentUser) {
-      auth.signOut().catch((error) => {
-        console.error('Firebase signout error:', error);
+      auth.signOut().catch(() => {
+        // Silent fail
       });
     }
-    
-    console.log('✅ Logout completed');
   };
 
   // Initialize auth state on mount with better error handling
   useEffect(() => {
     const initializeAuth = async () => {
-      console.log('🔄 Initializing authentication...');
-      
       // Skip auth initialization for public routes (card pages)
       if (typeof window !== 'undefined') {
         const pathname = window.location.pathname;
         if (pathname.startsWith('/card/')) {
-          console.log('ℹ️ Public route detected, skipping auth initialization');
           dispatch({ type: 'INITIALIZE', payload: { user: null } });
           return;
         }
@@ -288,25 +267,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const token = getToken();
 
         if (savedUser && token) {
-          console.log('📦 Found saved user data, verifying token...');
           const userData: AdminUser = JSON.parse(savedUser);
           
           // Verify the token is still valid
           const isValid = await verifyToken();
           if (!isValid) {
-            console.log('❌ Saved token is invalid, clearing data');
             clearUserData();
             dispatch({ type: 'INITIALIZE', payload: { user: null } });
-          } else {
-            console.log('✅ Token is valid, user authenticated');
-            // Token verification already dispatched LOGIN_SUCCESS
           }
         } else {
-          console.log('ℹ️ No saved user data found');
           dispatch({ type: 'INITIALIZE', payload: { user: null } });
         }
       } catch (error) {
-        console.error('❌ Auth initialization error:', error);
         clearUserData();
         dispatch({ type: 'INITIALIZE', payload: { user: null } });
       }

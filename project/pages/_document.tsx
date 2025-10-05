@@ -5,7 +5,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta name="theme-color" content="#1e40af" />
-        <meta name="description" content="Professional NFC Digital Profile Management System Powered By Burj Code Technologies" />
+        <meta name="description" content="Professional NFC Digital Profile Management System Powered By BurjCode Technologies" />
         {/* Use empty favicon to override Next.js default */}
         <link rel="icon" href="/favicon.ico" />
         <link rel="shortcut icon" href="/favicon.ico" />

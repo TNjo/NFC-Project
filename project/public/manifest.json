@@ -1,7 +1,7 @@
 {
-  "name": "NFC Digital Profile Powered By Burj Code Technologies",
+  "name": "NFC Digital Profile Powered By BurjCode Technologies",
   "short_name": "NFC Digital Profile",
-  "description": "Professional NFC Digital Profile Management System Powered By Burj Code Technologies",
+  "description": "Professional NFC Digital Profile Management System Powered By BurjCode Technologies",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

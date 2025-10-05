@@ -168,7 +168,7 @@ export default function Login() {
             className="text-center mt-6"
           >
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Powered by Burj Code Technologies
+              Powered by BurjCode Technologies
             </p>
           </motion.div>
         </motion.div>
