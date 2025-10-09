@@ -8,6 +8,8 @@ export interface Cardholder {
   email: string;
   address: string;
   profilePhoto?: string;
+  backgroundImageUrl?: string;
+  backgroundColors?: string;
   socialMedia: {
     linkedin?: string;
     instagram?: string;
@@ -27,10 +29,12 @@ export interface Cardholder {
 // Comprehensive User interface matching Firebase Cloud Function
 export interface ComprehensiveUser {
   id: string; // Firebase document ID
-  
+
   // Basic Information
   prefixes?: string;
   profilePicture?: string;
+  backgroundImageUrl?: string;
+  backgroundColors?: string; // JSON string of color array or single color
   fullName: string;
   displayName: string;
   cardPrintName: string;

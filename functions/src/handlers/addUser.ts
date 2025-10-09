@@ -49,10 +49,12 @@ export interface ComprehensiveUser {
   // Basic Information
   prefixes?: string;
   profilePicture?: string;
+  backgroundImageUrl?: string;
+  backgroundColors?: string; // JSON string of color array or single color
   fullName: string;
   displayName: string; // Name to be displayed in contact card
   cardPrintName: string; // Name to be printed in the card
-  
+
   // Contact Information
   primaryContactNumber: string;
   secondaryContactNumber?: string;
@@ -107,6 +109,8 @@ export const addUser = (req: Request, res: Response): Promise<void> | void => {
       const {
         prefixes,
         profilePicture,
+        backgroundImageUrl,
+        backgroundColors,
         fullName,
         displayName,
         cardPrintName,
@@ -154,6 +158,8 @@ export const addUser = (req: Request, res: Response): Promise<void> | void => {
         // Basic Information
         prefixes: prefixes || null,
         profilePicture: profilePicture || null,
+        backgroundImageUrl: backgroundImageUrl || null,
+        backgroundColors: backgroundColors || null,
         fullName,
         displayName,
         cardPrintName,

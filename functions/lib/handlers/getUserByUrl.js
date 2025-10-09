@@ -67,6 +67,8 @@ const getUserByUrl = (req, res) => {
                 // Basic Information
                 prefixes: userData?.prefixes || null,
                 profilePicture: userData?.profilePicture || null,
+                backgroundImageUrl: userData?.backgroundImageUrl || null,
+                backgroundColors: userData?.backgroundColors || null,
                 fullName: userData?.fullName || '',
                 displayName: userData?.displayName || '',
                 cardPrintName: userData?.cardPrintName || '',

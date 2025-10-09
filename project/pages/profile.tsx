@@ -43,6 +43,8 @@ export default function ProfileSettings() {
     // Basic Information
     prefixes: '',
     profilePicture: '',
+    backgroundImageUrl: '',
+    backgroundColors: '',
     fullName: '',
     displayName: '',
     cardPrintName: '',
@@ -89,6 +91,8 @@ export default function ProfileSettings() {
           setFormData({
             prefixes: comprehensiveUser.prefixes || '',
             profilePicture: comprehensiveUser.profilePicture || '',
+            backgroundImageUrl: comprehensiveUser.backgroundImageUrl || '',
+            backgroundColors: comprehensiveUser.backgroundColors || '',
             fullName: comprehensiveUser.fullName || '',
             displayName: comprehensiveUser.displayName || '',
             cardPrintName: comprehensiveUser.cardPrintName || '',
@@ -294,6 +298,38 @@ export default function ProfileSettings() {
                             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                             placeholder="https://example.com/photo.jpg"
                           />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Background Image URL
+                          </label>
+                          <input
+                            type="url"
+                            value={formData.backgroundImageUrl}
+                            onChange={(e) => handleInputChange('backgroundImageUrl', e.target.value)}
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            placeholder="https://example.com/background.jpg"
+                          />
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Optional: Image to display behind profile picture
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Background Colors
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.backgroundColors}
+                            onChange={(e) => handleInputChange('backgroundColors', e.target.value)}
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            placeholder="#ff0000,#00ff00,#0000ff or #ff0000"
+                          />
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Optional: Hex colors (single or comma-separated for gradient)
+                          </p>
                         </div>
 
                         <div>

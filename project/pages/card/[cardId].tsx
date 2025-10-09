@@ -63,7 +63,7 @@ export default function BusinessCard() {
 
       if (result.success && result.data) {
         setUser(result.data);
-        
+
         // Show save prompt on every visit after a short delay
         setTimeout(() => {
           setShowSavePrompt(true);
@@ -207,12 +207,28 @@ export default function BusinessCard() {
             {/* Business Card */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-6">
               {/* Header Section */}
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-8 text-center">
+              <div
+                className="px-6 py-8 text-center"
+                style={user?.backgroundImageUrl ? {
+                  backgroundImage: `url(${user.backgroundImageUrl})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat'
+                } : user?.backgroundColors ? {
+                  background: user.backgroundColors.includes(',') ?
+                    `linear-gradient(135deg, ${user.backgroundColors})` :
+                    user.backgroundColors
+                } : {
+                  background: 'linear-gradient(to right, #2563eb, #3730a3)' // Default blue gradient as fallback
+                }}
+              >
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className="w-24 h-24 bg-white rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden"
+                  className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden relative ${
+                    user.backgroundImageUrl || user.backgroundColors ? 'bg-white/20 backdrop-blur-sm border-2 border-white/30' : 'bg-white'
+                  }`}
                 >
                   {user.profilePicture ? (
                     <img
@@ -226,22 +242,30 @@ export default function BusinessCard() {
                     </div>
                   )}
                 </motion.div>
-                
-                <h1 className="text-2xl font-bold text-white mb-1">
+
+                <h1 className={`text-2xl font-bold mb-1 ${
+                  user.backgroundImageUrl || user.backgroundColors ? 'text-white drop-shadow-lg' : 'text-white'
+                }`}>
                   {user.prefixes ? `${user.prefixes} ` : ''}{fullName}
                 </h1>
                 {user.cardPrintName && user.cardPrintName !== fullName && (
-                  <p className="text-blue-50 text-sm mb-1">
+                  <p className={`text-sm mb-1 ${
+                    user.backgroundImageUrl || user.backgroundColors ? 'text-white/90 drop-shadow-md' : 'text-blue-50'
+                  }`}>
                     ({user.cardPrintName})
                   </p>
                 )}
                 {user.designation && (
-                  <p className="text-blue-100 font-medium mb-1">
+                  <p className={`font-medium mb-1 ${
+                    user.backgroundImageUrl || user.backgroundColors ? 'text-white/95 drop-shadow-md' : 'text-blue-100'
+                  }`}>
                     {user.designation}
                   </p>
                 )}
                 {user.companyName && (
-                  <p className="text-blue-200">
+                  <p className={`${
+                    user.backgroundImageUrl || user.backgroundColors ? 'text-white/90 drop-shadow-md' : 'text-blue-200'
+                  }`}>
                     {user.companyName}
                   </p>
                 )}

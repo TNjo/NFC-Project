@@ -91,6 +91,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       email: user.emailAddress || '',
       address: user.companyLocation || '',
       profilePhoto: user.profilePicture || '',
+      backgroundImageUrl: user.backgroundImageUrl || '',
+      backgroundColors: user.backgroundColors || '',
       socialMedia: {
         linkedin: user.linkedinProfile,
         instagram: user.instagramProfile,

@@ -15,7 +15,7 @@ export const API_ENDPOINTS = {
   // Analytics Functions
   GET_ANALYTICS: 'https://getanalyticsfn-uupdjznjhq-uc.a.run.app',
   TRACK_PAGE_VIEW: 'https://trackpageviewfn-uupdjznjhq-uc.a.run.app',
-  TRACK_CONTACT_SAVE: 'https://us-central1-burjcode-profile-dev.cloudfunctions.net/trackContactSaveFn',
+  TRACK_CONTACT_SAVE: 'https://trackcontactsavefn-uupdjznjhq-uc.a.run.app',
   
   // Authentication Functions
   CREATE_ADMIN: 'https://createadminfn-uupdjznjhq-uc.a.run.app',
