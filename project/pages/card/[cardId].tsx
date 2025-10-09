@@ -85,11 +85,26 @@ export default function BusinessCard() {
     const fullName = user.fullName || user.displayName || 'Unknown User';
     const cleanName = fullName.replace(/[^\w\s-]/g, '').trim(); // Remove special characters that might cause issues
 
+    // Split name into first and last name for proper vCard formatting
+    const nameParts = cleanName.split(' ');
+
+    // Filter out single character words, common initials, and titles
+    const filteredParts = nameParts.filter(part => {
+      const lowerPart = part.toLowerCase();
+      return part.length > 1 && // Remove single characters
+             !['mr', 'mrs', 'ms', 'dr', 'prof', 'rev'].includes(lowerPart); // Remove common titles
+    });
+
+    const lastName = filteredParts[filteredParts.length - 1] || nameParts[nameParts.length - 1] || ''; // Last meaningful word as last name
+    const firstNameParts = filteredParts.slice(0, -1);
+    const firstName = firstNameParts.length > 0 ? firstNameParts.join(' ') : nameParts[0] || ''; // Everything except last meaningful word as first name
+
     const vCard = [
       'BEGIN:VCARD',
       'VERSION:3.0',
       // Use N (name components) and FN (formatted name) for better Apple compatibility
-      `N:${cleanName};;;`,
+      // Format: N:LastName;FirstName;MiddleName;Title;Suffix
+      `N:${lastName};${firstName};;;`,
       `FN:${cleanName}`,
       user.companyName ? `ORG:${user.companyName}` : '',
       user.designation ? `TITLE:${user.designation}` : '',
