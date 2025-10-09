@@ -102,7 +102,6 @@ export default function BusinessCard() {
       user.companyLocation ? `ADR;TYPE=WORK:;;${user.companyLocation};;;;` : '',
       user.personalWebsite ? `URL:${user.personalWebsite}` : '',
       user.companyWebsiteUrl ? `URL:${user.companyWebsiteUrl}` : '',
-      user.linkedinProfile ? `URL:${user.linkedinProfile}` : '',
       'END:VCARD',
     ].filter(Boolean).join('\n');
 
