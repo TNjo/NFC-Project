@@ -81,10 +81,16 @@ export default function BusinessCard() {
   const generateVCard = () => {
     if (!user) return;
 
+    // Ensure we have a proper full name
+    const fullName = user.fullName || user.displayName || 'Unknown User';
+    const cleanName = fullName.replace(/[^\w\s-]/g, '').trim(); // Remove special characters that might cause issues
+
     const vCard = [
       'BEGIN:VCARD',
       'VERSION:3.0',
-      `FN:${user.prefixes ? `${user.prefixes} ` : ''}${user.fullName || user.displayName || 'Unknown User'}`,
+      // Use N (name components) and FN (formatted name) for better Apple compatibility
+      `N:${cleanName};;;`,
+      `FN:${cleanName}`,
       user.companyName ? `ORG:${user.companyName}` : '',
       user.designation ? `TITLE:${user.designation}` : '',
       user.primaryContactNumber ? `TEL;TYPE=WORK,VOICE:${user.primaryContactNumber}` : '',
