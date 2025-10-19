@@ -99,6 +99,62 @@ export default function BusinessCard() {
     const firstNameParts = filteredParts.slice(0, -1);
     const firstName = firstNameParts.length > 0 ? firstNameParts.join(' ') : nameParts[0] || ''; // Everything except last meaningful word as first name
 
+    // Helper function to extract base64 data from data URL or raw base64 string
+    const extractBase64Data = (dataUrl: string): { data: string; type: string } | null => {
+      if (!dataUrl) return null;
+
+      // Check if it's a full data URL
+      if (dataUrl.startsWith('data:')) {
+        const matches = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+        if (!matches) return null;
+
+        return {
+          type: matches[1],
+          data: matches[2]
+        };
+      }
+
+      // Check if it's raw base64 data (starts with common base64 patterns)
+      // JPEG: /9j/4AAQSkZJRgABAQE
+      // PNG: iVBORw0KGgoAAAANSUhEUgAA
+      // GIF: R0lGODlh
+      // WebP: UklGR
+      const isBase64 = /^[A-Za-z0-9+/=]+$/.test(dataUrl) && dataUrl.length > 10;
+
+      if (isBase64) {
+        // Determine MIME type based on base64 signature
+        let mimeType = 'image/jpeg'; // default
+
+        if (dataUrl.startsWith('iVBORw0KGgo')) {
+          mimeType = 'image/png';
+        } else if (dataUrl.startsWith('R0lGODlh')) {
+          mimeType = 'image/gif';
+        } else if (dataUrl.startsWith('UklGR')) {
+          mimeType = 'image/webp';
+        } else if (dataUrl.startsWith('/9j/4AAQSkZJRgABAQE') || dataUrl.startsWith('/9j/4AAQSkZJRgABAQEA')) {
+          mimeType = 'image/jpeg';
+        }
+
+        return {
+          type: mimeType,
+          data: dataUrl
+        };
+      }
+
+      return null;
+    };
+
+    // Process profile picture for VCF (only base64 can be embedded in VCF)
+    let photoField = '';
+    if (user.profilePictureBase64) {
+      const base64Data = extractBase64Data(user.profilePictureBase64);
+      if (base64Data) {
+        // Determine MIME type for VCF
+        const mimeType = base64Data.type.toUpperCase();
+        photoField = `PHOTO;ENCODING=b;TYPE=${mimeType}:${base64Data.data}`;
+      }
+    }
+
     const vCard = [
       'BEGIN:VCARD',
       'VERSION:3.0',
@@ -108,6 +164,7 @@ export default function BusinessCard() {
       `FN:${cleanName}`,
       user.companyName ? `ORG:${user.companyName}` : '',
       user.designation ? `TITLE:${user.designation}` : '',
+      photoField, // Add profile picture if available
       user.primaryContactNumber ? `TEL;TYPE=CELL:${user.primaryContactNumber}` : '',
       user.secondaryContactNumber ? `TEL;TYPE=HOME,VOICE:${user.secondaryContactNumber}` : '',
       user.whatsappNumber ? `TEL;TYPE=WORK:${user.whatsappNumber}` : '',
@@ -118,7 +175,7 @@ export default function BusinessCard() {
       user.personalWebsite ? `URL:${user.personalWebsite}` : '',
       user.companyWebsiteUrl ? `URL:${user.companyWebsiteUrl}` : '',
       'END:VCARD',
-    ].filter(Boolean).join('\n');
+    ].filter(line => line !== '').join('\n');
 
     const blob = new Blob([vCard], { type: 'text/vcard' });
     const url = window.URL.createObjectURL(blob);

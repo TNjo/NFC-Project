@@ -54,6 +54,7 @@ export const getUserByUrl = (req: Request, res: Response): void => {
         // Basic Information
         prefixes: userData?.prefixes || null,
         profilePicture: userData?.profilePicture || null,
+        profilePictureBase64: userData?.profilePictureBase64 || null,
         backgroundImageUrl: userData?.backgroundImageUrl || null,
         backgroundColors: userData?.backgroundColors || null,
         fullName: userData?.fullName || '',

@@ -33,6 +33,7 @@ export interface ComprehensiveUser {
   // Basic Information
   prefixes?: string;
   profilePicture?: string;
+  profilePictureBase64?: string;
   backgroundImageUrl?: string;
   backgroundColors?: string; // JSON string of color array or single color
   fullName: string;

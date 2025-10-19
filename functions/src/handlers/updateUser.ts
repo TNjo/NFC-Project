@@ -31,6 +31,7 @@ export const updateUser = (req: Request, res: Response): void => {
       const {
         prefixes,
         profilePicture,
+        profilePictureBase64,
         backgroundImageUrl,
         backgroundColors,
         fullName,
@@ -74,6 +75,7 @@ export const updateUser = (req: Request, res: Response): void => {
       // Only include fields that are provided in the request
       if (prefixes !== undefined) updateData.prefixes = prefixes;
       if (profilePicture !== undefined) updateData.profilePicture = profilePicture;
+      if (profilePictureBase64 !== undefined) updateData.profilePictureBase64 = profilePictureBase64;
       if (backgroundImageUrl !== undefined) updateData.backgroundImageUrl = backgroundImageUrl;
       if (backgroundColors !== undefined) updateData.backgroundColors = backgroundColors;
       if (fullName !== undefined) updateData.fullName = fullName;
