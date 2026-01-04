@@ -12,7 +12,8 @@ import {
   Instagram, 
   Twitter, 
   Globe,
-  Loader2
+  Loader2,
+  ExternalLink
 } from 'lucide-react';
 import { ComprehensiveUser } from '../../types';
 
@@ -324,7 +325,7 @@ export default function BusinessCard() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden relative ${
+                  className={`w-40 h-40 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden relative ${
                     user.backgroundImageUrl || user.backgroundColors ? 'bg-white/20 backdrop-blur-sm border-2 border-white/30' : 'bg-white'
                   }`}
                 >
@@ -335,7 +336,7 @@ export default function BusinessCard() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+                    <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold">
                       {fullName.charAt(0)}
                     </div>
                   )}
@@ -380,7 +381,7 @@ export default function BusinessCard() {
                   {user.primaryContactNumber && (
                     <a
                       href={`tel:${user.primaryContactNumber}`}
-                      className="flex items-center justify-center space-x-2 bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 px-4 py-3 rounded-xl hover:bg-green-100 dark:hover:bg-green-800 transition-colors"
+                      className="flex items-center space-x-2 bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 px-4 py-3 rounded-xl hover:bg-green-100 dark:hover:bg-green-800 transition-colors"
                     >
                       <Phone className="w-4 h-4" />
                       <span className="text-sm font-medium">Call</span>
@@ -400,7 +401,7 @@ export default function BusinessCard() {
                   {user.whatsappNumber && (
                     <a
                       href={`https://wa.me/${user.whatsappNumber.replace(/\D/g, '')}`}
-                      className="flex items-center justify-center space-x-2 bg-emerald-50 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-800 transition-colors"
+                      className="flex items-center space-x-2 bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 px-4 py-3 rounded-xl hover:bg-green-100 dark:hover:bg-green-800 transition-colors"
                     >
                       <Phone className="w-4 h-4" />
                       <span className="text-sm font-medium">WhatsApp</span>
@@ -594,7 +595,7 @@ export default function BusinessCard() {
                           onClick={handlePlatformClick}
                           className="bg-gradient-to-r from-purple-600 to-indigo-600 p-3 rounded-xl text-white hover:from-purple-700 hover:to-indigo-700 transition-all flex items-center space-x-2"
                         >
-                          <Globe className="w-5 h-5" />
+                          <ExternalLink className="w-5 h-5" />
                           <span className="text-sm font-medium">
                             {user.platforms.length === 1 ? 'Platform' : 'Platforms'}
                           </span>
