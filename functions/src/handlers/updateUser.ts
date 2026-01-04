@@ -128,7 +128,7 @@ export const updateUser = (req: Request, res: Response): void => {
     } catch (err) {
       console.error('updateUser error:', err);
       
-      // Handle specific Firestore errors
+
       if (err instanceof Error) {
         if (err.message.includes('PERMISSION_DENIED')) {
           res.status(403).json({ error: 'Permission denied to update user' });
