@@ -43,31 +43,32 @@ export default function ProfileSettings() {
     // Basic Information
     prefixes: '',
     profilePicture: '',
+    profilePictureBase64: '',
     backgroundImageUrl: '',
     backgroundColors: '',
     fullName: '',
     displayName: '',
     cardPrintName: '',
-    
+
     // Contact Information
     primaryContactNumber: '',
     secondaryContactNumber: '',
     whatsappNumber: '',
     emailAddress: '',
-    
+
     // Professional Information
     designation: '',
     companyName: '',
     companyWebsiteUrl: '',
     companyLocation: '',
-    
+
     // Social Media Profiles
     linkedinProfile: '',
     instagramProfile: '',
     facebookProfile: '',
     twitterProfile: '',
     personalWebsite: '',
-    
+
     // Business Information
     googleReviewLink: '',
     businessContact: '',
@@ -94,6 +95,7 @@ export default function ProfileSettings() {
           setFormData({
             prefixes: comprehensiveUser.prefixes || '',
             profilePicture: comprehensiveUser.profilePicture || '',
+            profilePictureBase64: comprehensiveUser.profilePictureBase64 || '',
             backgroundImageUrl: comprehensiveUser.backgroundImageUrl || '',
             backgroundColors: comprehensiveUser.backgroundColors || '',
             fullName: comprehensiveUser.fullName || '',
@@ -320,6 +322,25 @@ export default function ProfileSettings() {
                             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                             placeholder="https://example.com/photo.jpg"
                           />
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Optional: External image URL for profile picture
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Profile Picture (Base64)
+                          </label>
+                          <textarea
+                            value={formData.profilePictureBase64}
+                            onChange={(e) => handleInputChange('profilePictureBase64', e.target.value)}
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono text-sm"
+                            placeholder="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
+                            rows={3}
+                          />
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Optional: Base64 encoded image data (e.g., data:image/jpeg;base64,...). Base64 takes precedence over URL if both are provided.
+                          </p>
                         </div>
 
                         <div>

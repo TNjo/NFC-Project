@@ -49,6 +49,7 @@ export interface ComprehensiveUser {
   // Basic Information
   prefixes?: string;
   profilePicture?: string;
+  profilePictureBase64?: string;
   backgroundImageUrl?: string;
   backgroundColors?: string; // JSON string of color array or single color
   fullName: string;
@@ -115,6 +116,7 @@ export const addUser = (req: Request, res: Response): Promise<void> | void => {
       const {
         prefixes,
         profilePicture,
+        profilePictureBase64,
         backgroundImageUrl,
         backgroundColors,
         fullName,
@@ -165,6 +167,7 @@ export const addUser = (req: Request, res: Response): Promise<void> | void => {
         // Basic Information
         prefixes: prefixes || null,
         profilePicture: profilePicture || null,
+        profilePictureBase64: profilePictureBase64 || null,
         backgroundImageUrl: backgroundImageUrl || null,
         backgroundColors: backgroundColors || null,
         fullName,

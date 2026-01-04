@@ -48,7 +48,7 @@ const updateUser = (req, res) => {
                 return;
             }
             // 3) Extract update fields from request body
-            const { prefixes, profilePicture, backgroundImageUrl, backgroundColors, fullName, displayName, cardPrintName, primaryContactNumber, secondaryContactNumber, whatsappNumber, emailAddress, designation, companyName, companyWebsiteUrl, companyLocation, linkedinProfile, instagramProfile, facebookProfile, twitterProfile, personalWebsite, platforms, googleReviewLink, businessContact, businessEmailAddress } = req.body;
+            const { prefixes, profilePicture, profilePictureBase64, backgroundImageUrl, backgroundColors, fullName, displayName, cardPrintName, primaryContactNumber, secondaryContactNumber, whatsappNumber, emailAddress, designation, companyName, companyWebsiteUrl, companyLocation, linkedinProfile, instagramProfile, facebookProfile, twitterProfile, personalWebsite, googleReviewLink, businessContact, businessEmailAddress } = req.body;
             // 4) Validate email formats if provided
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (emailAddress && !emailRegex.test(emailAddress)) {
@@ -68,6 +68,8 @@ const updateUser = (req, res) => {
                 updateData.prefixes = prefixes;
             if (profilePicture !== undefined)
                 updateData.profilePicture = profilePicture;
+            if (profilePictureBase64 !== undefined)
+                updateData.profilePictureBase64 = profilePictureBase64;
             if (backgroundImageUrl !== undefined)
                 updateData.backgroundImageUrl = backgroundImageUrl;
             if (backgroundColors !== undefined)
