@@ -74,6 +74,12 @@ export interface ComprehensiveUser {
   twitterProfile?: string;
   personalWebsite?: string;
   
+  // Platforms
+  platforms?: Array<{
+    name: string;
+    url: string;
+  }>;
+  
   // Business Information
   googleReviewLink?: string;
   businessContact?: string;
@@ -127,6 +133,7 @@ export const addUser = (req: Request, res: Response): Promise<void> | void => {
         facebookProfile,
         twitterProfile,
         personalWebsite,
+        platforms,
         googleReviewLink,
         businessContact,
         businessEmailAddress
@@ -182,6 +189,9 @@ export const addUser = (req: Request, res: Response): Promise<void> | void => {
         facebookProfile: facebookProfile || null,
         twitterProfile: twitterProfile || null,
         personalWebsite: personalWebsite || null,
+        
+        // Platforms
+        platforms: platforms || [],
         
         // Business Information
         googleReviewLink: googleReviewLink || null,

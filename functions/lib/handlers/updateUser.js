@@ -48,7 +48,7 @@ const updateUser = (req, res) => {
                 return;
             }
             // 3) Extract update fields from request body
-            const { prefixes, profilePicture, backgroundImageUrl, backgroundColors, fullName, displayName, cardPrintName, primaryContactNumber, secondaryContactNumber, whatsappNumber, emailAddress, designation, companyName, companyWebsiteUrl, companyLocation, linkedinProfile, instagramProfile, facebookProfile, twitterProfile, personalWebsite, googleReviewLink, businessContact, businessEmailAddress } = req.body;
+            const { prefixes, profilePicture, backgroundImageUrl, backgroundColors, fullName, displayName, cardPrintName, primaryContactNumber, secondaryContactNumber, whatsappNumber, emailAddress, designation, companyName, companyWebsiteUrl, companyLocation, linkedinProfile, instagramProfile, facebookProfile, twitterProfile, personalWebsite, platforms, googleReviewLink, businessContact, businessEmailAddress } = req.body;
             // 4) Validate email formats if provided
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (emailAddress && !emailRegex.test(emailAddress)) {
@@ -104,6 +104,8 @@ const updateUser = (req, res) => {
                 updateData.twitterProfile = twitterProfile;
             if (personalWebsite !== undefined)
                 updateData.personalWebsite = personalWebsite;
+            if (platforms !== undefined)
+                updateData.platforms = platforms;
             if (googleReviewLink !== undefined)
                 updateData.googleReviewLink = googleReviewLink;
             if (businessContact !== undefined)

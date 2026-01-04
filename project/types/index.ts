@@ -58,6 +58,12 @@ export interface ComprehensiveUser {
   twitterProfile?: string;
   personalWebsite?: string;
   
+  // Platforms (custom platform links)
+  platforms?: Array<{
+    name: string;
+    url: string;
+  }>;
+  
   // Business Information
   googleReviewLink?: string;
   businessContact?: string;

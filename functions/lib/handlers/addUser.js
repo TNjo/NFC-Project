@@ -85,7 +85,7 @@ const addUser = (req, res) => {
             const uid = decoded.uid;
             */
             // 2) Validate required input fields
-            const { prefixes, profilePicture, backgroundImageUrl, backgroundColors, fullName, displayName, cardPrintName, primaryContactNumber, secondaryContactNumber, whatsappNumber, emailAddress, designation, companyName, companyWebsiteUrl, companyLocation, linkedinProfile, instagramProfile, facebookProfile, twitterProfile, personalWebsite, googleReviewLink, businessContact, businessEmailAddress } = req.body;
+            const { prefixes, profilePicture, backgroundImageUrl, backgroundColors, fullName, displayName, cardPrintName, primaryContactNumber, secondaryContactNumber, whatsappNumber, emailAddress, designation, companyName, companyWebsiteUrl, companyLocation, linkedinProfile, instagramProfile, facebookProfile, twitterProfile, personalWebsite, platforms, googleReviewLink, businessContact, businessEmailAddress } = req.body;
             // Validate required fields
             if (!fullName || !displayName || !cardPrintName || !primaryContactNumber || !emailAddress) {
                 res.status(400).json({
@@ -130,6 +130,8 @@ const addUser = (req, res) => {
                 facebookProfile: facebookProfile || null,
                 twitterProfile: twitterProfile || null,
                 personalWebsite: personalWebsite || null,
+                // Platforms
+                platforms: platforms || [],
                 // Business Information
                 googleReviewLink: googleReviewLink || null,
                 businessContact: businessContact || null,

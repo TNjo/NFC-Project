@@ -30,6 +30,7 @@ export default function BusinessCard() {
   const [error, setError] = useState<string>('');
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [cardId, setCardId] = useState<string | null>(null);
+  const [showPlatformsModal, setShowPlatformsModal] = useState(false);
 
   // Get cardId from URL on client side
   useEffect(() => {
@@ -150,6 +151,26 @@ export default function BusinessCard() {
 
   const handleDismissPrompt = () => {
     setShowSavePrompt(false);
+  };
+
+  const handlePlatformClick = () => {
+    if (!user?.platforms || user.platforms.length === 0) return;
+    
+    if (user.platforms.length === 1) {
+      // Navigate directly if only one platform
+      const url = user.platforms[0].url.startsWith('http') 
+        ? user.platforms[0].url 
+        : `https://${user.platforms[0].url}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      // Open modal if multiple platforms
+      setShowPlatformsModal(true);
+    }
+  };
+
+  const handlePlatformModalClick = (url: string) => {
+    const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+    window.open(fullUrl, '_blank', 'noopener,noreferrer');
   };
 
   if (loading) {
@@ -458,15 +479,18 @@ export default function BusinessCard() {
                 </motion.div>
 
                 {/* Social Media */}
-                {(socialLinks.length > 0 || user.facebookProfile) && (
+                {(socialLinks.length > 0 || user.facebookProfile || (user.platforms && user.platforms.length > 0)) && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
                   >
-                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                      Connect with me
-                    </h3>
+                    {/* Only show heading if there are social links AND NO platforms */}
+                    {(socialLinks.length > 0 || user.facebookProfile) && (!user.platforms || user.platforms.length === 0) && (
+                      <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                        Connect with me
+                      </h3>
+                    )}
                     <div className="flex flex-wrap gap-3">
                       {socialLinks.map(({ icon: Icon, url, label, color }) => (
                         <a
@@ -491,6 +515,19 @@ export default function BusinessCard() {
                           <Globe className="w-5 h-5" />
                           <span className="text-sm font-medium">Facebook</span>
                         </a>
+                      )}
+
+                      {/* Platforms Button */}
+                      {user.platforms && user.platforms.length > 0 && (
+                        <button
+                          onClick={handlePlatformClick}
+                          className="bg-gradient-to-r from-purple-600 to-indigo-600 p-3 rounded-xl text-white hover:from-purple-700 hover:to-indigo-700 transition-all flex items-center space-x-2"
+                        >
+                          <Globe className="w-5 h-5" />
+                          <span className="text-sm font-medium">
+                            {user.platforms.length === 1 ? 'Platform' : 'Platforms'}
+                          </span>
+                        </button>
                       )}
                     </div>
                   </motion.div>
@@ -615,6 +652,83 @@ export default function BusinessCard() {
                 <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
                   You can always save this contact using the button below
                 </p>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* Platforms Modal */}
+          {showPlatformsModal && user?.platforms && user.platforms.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+              onClick={() => setShowPlatformsModal(false)}
+              style={{ pointerEvents: 'auto' }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Available Platforms
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    Click on a platform to visit
+                  </p>
+                </div>
+
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {user.platforms.map((platform, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        handlePlatformModalClick(platform.url);
+                        setShowPlatformsModal(false);
+                      }}
+                      className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 hover:from-purple-100 hover:to-indigo-100 dark:hover:from-purple-900/30 dark:hover:to-indigo-900/30 rounded-xl transition-all group"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                          <Globe className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="text-left">
+                          <p className="font-semibold text-gray-900 dark:text-white">
+                            {platform.name}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs">
+                            {platform.url}
+                          </p>
+                        </div>
+                      </div>
+                      <svg 
+                        className="w-5 h-5 text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={2} 
+                          d="M9 5l7 7-7 7" 
+                        />
+                      </svg>
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setShowPlatformsModal(false)}
+                  className="w-full mt-6 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-xl transition-colors font-medium"
+                >
+                  Close
+                </button>
               </motion.div>
             </motion.div>
           )}

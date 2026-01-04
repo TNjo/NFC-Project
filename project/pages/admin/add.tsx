@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, ArrowLeft, Loader2 } from 'lucide-react';
+import { Save, ArrowLeft, Loader2, Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { Header } from '../../components/Layout/Header';
@@ -71,6 +71,9 @@ export default function AddCardholderForm() {
     businessEmailAddress: '',
   });
 
+  // Platforms state
+  const [platforms, setPlatforms] = useState<Array<{ name: string; url: string }>>([]);
+
   // Redirect to login if not authenticated
   useEffect(() => {
     if (authState.isInitialized && !authState.isAuthenticated) {
@@ -108,7 +111,7 @@ export default function AddCardholderForm() {
       }
 
       // Call Firebase Cloud Function
-      const response = await apiMethods.createUser(formData);
+      const response = await apiMethods.createUser({ ...formData, platforms });
 
       const result = await response.json();
 
@@ -132,6 +135,7 @@ export default function AddCardholderForm() {
         linkedinProfile: '', instagramProfile: '', facebookProfile: '', twitterProfile: '', personalWebsite: '',
         googleReviewLink: '', businessContact: '', businessEmailAddress: '',
       });
+      setPlatforms([]);
 
       // Redirect after success
       setTimeout(() => {
@@ -149,6 +153,20 @@ export default function AddCardholderForm() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const addPlatform = () => {
+    setPlatforms([...platforms, { name: '', url: '' }]);
+  };
+
+  const removePlatform = (index: number) => {
+    setPlatforms(platforms.filter((_, i) => i !== index));
+  };
+
+  const updatePlatform = (index: number, field: 'name' | 'url', value: string) => {
+    const newPlatforms = [...platforms];
+    newPlatforms[index][field] = value;
+    setPlatforms(newPlatforms);
   };
 
   return (
@@ -501,6 +519,80 @@ export default function AddCardholderForm() {
                           />
                         </div>
                       </div>
+                    </div>
+
+                    {/* Platforms */}
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          Platforms
+                        </h2>
+                        <button
+                          type="button"
+                          onClick={addPlatform}
+                          className="flex items-center space-x-2 px-4 py-2 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span className="text-sm font-medium">Add Platform</span>
+                        </button>
+                      </div>
+                      
+                      {platforms.length === 0 ? (
+                        <div className="text-center py-8">
+                          <p className="text-gray-500 dark:text-gray-400 mb-4">
+                            No platforms added yet. Add custom platform links for your card.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={addPlatform}
+                            className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                          >
+                            <Plus className="w-4 h-4" />
+                            <span>Add Your First Platform</span>
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {platforms.map((platform, index) => (
+                            <div key={index} className="flex gap-4 items-start">
+                              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Platform Name
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={platform.name}
+                                    onChange={(e) => updatePlatform(index, 'name', e.target.value)}
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                    placeholder="e.g., YouTube, TikTok, GitHub"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Platform URL
+                                  </label>
+                                  <input
+                                    type="url"
+                                    value={platform.url}
+                                    onChange={(e) => updatePlatform(index, 'url', e.target.value)}
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                    placeholder="https://..."
+                                  />
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removePlatform(index)}
+                                className="mt-8 p-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                title="Remove platform"
+                              >
+                                <Trash2 className="w-5 h-5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     {/* Business Information */}

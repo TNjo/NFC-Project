@@ -88,6 +88,8 @@ const getUserByUrl = (req, res) => {
                 facebookProfile: userData?.facebookProfile || null,
                 twitterProfile: userData?.twitterProfile || null,
                 personalWebsite: userData?.personalWebsite || null,
+                // Platforms
+                platforms: userData?.platforms || [],
                 // Business Information
                 googleReviewLink: userData?.googleReviewLink || null,
                 businessContact: userData?.businessContact || null,

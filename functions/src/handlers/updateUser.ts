@@ -49,6 +49,7 @@ export const updateUser = (req: Request, res: Response): void => {
         facebookProfile,
         twitterProfile,
         personalWebsite,
+        platforms,
         googleReviewLink,
         businessContact,
         businessEmailAddress
@@ -92,6 +93,7 @@ export const updateUser = (req: Request, res: Response): void => {
       if (facebookProfile !== undefined) updateData.facebookProfile = facebookProfile;
       if (twitterProfile !== undefined) updateData.twitterProfile = twitterProfile;
       if (personalWebsite !== undefined) updateData.personalWebsite = personalWebsite;
+      if (platforms !== undefined) updateData.platforms = platforms;
       if (googleReviewLink !== undefined) updateData.googleReviewLink = googleReviewLink;
       if (businessContact !== undefined) updateData.businessContact = businessContact;
       if (businessEmailAddress !== undefined) updateData.businessEmailAddress = businessEmailAddress;
