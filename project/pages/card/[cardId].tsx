@@ -146,13 +146,14 @@ export default function BusinessCard() {
       return null;
     };
 
-    // Process profile picture for VCF (only base64 can be embedded in VCF)
+    // Process profile picture for VCF (only base64 from database)
     let photoField = '';
-    if (user.profilePictureBase64) {
+    
+    // Only use profilePictureBase64 from database
+    if (user.profilePictureBase64 && user.profilePictureBase64.trim() !== '') {
       const base64Data = extractBase64Data(user.profilePictureBase64);
       if (base64Data) {
-        // Determine MIME type for VCF
-        const mimeType = base64Data.type.toUpperCase();
+        const mimeType = base64Data.type.replace('image/', '').toUpperCase();
         photoField = `PHOTO;ENCODING=b;TYPE=${mimeType}:${base64Data.data}`;
       }
     }

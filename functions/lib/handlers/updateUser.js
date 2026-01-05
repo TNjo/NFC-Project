@@ -48,7 +48,7 @@ const updateUser = (req, res) => {
                 return;
             }
             // 3) Extract update fields from request body
-            const { prefixes, profilePicture, profilePictureBase64, backgroundImageUrl, backgroundColors, fullName, displayName, cardPrintName, primaryContactNumber, secondaryContactNumber, whatsappNumber, emailAddress, designation, companyName, companyWebsiteUrl, companyLocation, linkedinProfile, instagramProfile, facebookProfile, twitterProfile, personalWebsite, googleReviewLink, businessContact, businessEmailAddress } = req.body;
+            const { prefixes, profilePicture, profilePictureBase64, backgroundImageUrl, backgroundColors, fullName, displayName, cardPrintName, primaryContactNumber, secondaryContactNumber, whatsappNumber, emailAddress, designation, companyName, companyWebsiteUrl, companyLocation, linkedinProfile, instagramProfile, facebookProfile, twitterProfile, personalWebsite, platforms, googleReviewLink, businessContact, businessEmailAddress } = req.body;
             // 4) Validate email formats if provided
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (emailAddress && !emailRegex.test(emailAddress)) {
@@ -138,7 +138,6 @@ const updateUser = (req, res) => {
         }
         catch (err) {
             console.error('updateUser error:', err);
-            // Handle specific Firestore errors
             if (err instanceof Error) {
                 if (err.message.includes('PERMISSION_DENIED')) {
                     res.status(403).json({ error: 'Permission denied to update user' });
