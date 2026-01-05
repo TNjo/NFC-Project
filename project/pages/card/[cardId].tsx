@@ -593,7 +593,19 @@ export default function BusinessCard() {
                       {user.platforms && user.platforms.length > 0 && (
                         <button
                           onClick={handlePlatformClick}
-                          className="bg-gradient-to-r from-purple-600 to-indigo-600 p-3 rounded-xl text-white hover:from-purple-700 hover:to-indigo-700 transition-all flex items-center space-x-2"
+                          className="p-3 rounded-xl text-white transition-all flex items-center space-x-2 shadow-md hover:shadow-lg"
+                          style={user.backgroundColors ? {
+                            background: user.backgroundColors.includes(',') ?
+                              `linear-gradient(135deg, ${user.backgroundColors})` :
+                              user.backgroundColors
+                          } : user.backgroundImageUrl ? {
+                            backgroundImage: `url(${user.backgroundImageUrl})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat'
+                          } : {
+                            background: 'linear-gradient(to right, #9333ea, #4f46e5)'
+                          }}
                         >
                           <ExternalLink className="w-5 h-5" />
                           <span className="text-sm font-medium">
@@ -646,7 +658,19 @@ export default function BusinessCard() {
                         }
                       }
                     }}
-                    className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+                    className="flex-1 flex items-center justify-center space-x-2 text-white px-4 py-3 rounded-xl transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+                    style={user.backgroundColors ? {
+                      background: user.backgroundColors.includes(',') ?
+                        `linear-gradient(135deg, ${user.backgroundColors})` :
+                        user.backgroundColors
+                    } : user.backgroundImageUrl ? {
+                      backgroundImage: `url(${user.backgroundImageUrl})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat'
+                    } : {
+                      background: 'linear-gradient(to right, #10b981, #059669)'
+                    }}
                   >
                     <Download className="w-5 h-5" />
                     <span className="text-sm font-bold">Save Contact</span>
