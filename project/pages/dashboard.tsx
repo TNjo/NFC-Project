@@ -33,21 +33,30 @@ function Dashboard() {
     try {
       let date: Date;
       
-      // Handle Firestore Timestamp object with _seconds (serialized format)
-      if (timestamp._seconds) {
-        date = new Date(timestamp._seconds * 1000);
+      // Check if it's an object (not string or number)
+      if (typeof timestamp === 'object' && timestamp !== null && !(timestamp instanceof Date)) {
+        // Handle Firestore Timestamp object with _seconds (serialized format)
+        if ('_seconds' in timestamp && timestamp._seconds) {
+          date = new Date(timestamp._seconds * 1000);
+        }
+        // Handle Firestore Timestamp object with seconds (standard format)
+        else if ('seconds' in timestamp && timestamp.seconds) {
+          date = new Date(timestamp.seconds * 1000);
+        } 
+        // Handle Firestore Timestamp with toDate method
+        else if ('toDate' in timestamp && typeof timestamp.toDate === 'function') {
+          date = timestamp.toDate();
+        } else {
+          date = new Date();
+        }
       }
-      // Handle Firestore Timestamp object with seconds (standard format)
-      else if (timestamp.seconds) {
-        date = new Date(timestamp.seconds * 1000);
-      } 
-      // Handle Firestore Timestamp with toDate method
-      else if (timestamp.toDate && typeof timestamp.toDate === 'function') {
-        date = timestamp.toDate();
+      // Handle Date object
+      else if (timestamp instanceof Date) {
+        date = timestamp;
       }
       // Handle ISO string or number
       else {
-        date = new Date(timestamp);
+        date = new Date(timestamp as string | number);
       }
 
       // Check if date is valid

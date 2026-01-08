@@ -38,6 +38,7 @@ export default function CardholderList() {
     if (authState.isAuthenticated && router.isReady && !state.isLoading) {
       fetchUsers();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authState.isAuthenticated, router.isReady, router.pathname, fetchUsers]);
 
   // Filter cardholders based on search term
@@ -183,6 +184,7 @@ export default function CardholderList() {
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
                                   {cardholder.profilePhoto ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                       src={cardholder.profilePhoto}
                                       alt={cardholder.name}
@@ -306,6 +308,7 @@ export default function CardholderList() {
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex items-center">
                             {cardholder.profilePhoto ? (
+                              // eslint-disable-next-line @next/next/no-img-element
                               <img
                                 src={cardholder.profilePhoto}
                                 alt={cardholder.name}
