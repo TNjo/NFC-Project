@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { AppProvider } from '../contexts/AppContext';
 import { AuthProvider } from '../contexts/AuthContext';
+import { UserAuthProvider } from '../contexts/UserAuthContext';
 import { ToastProvider } from '../contexts/ToastContext';
 import '../styles/globals.css';
 
@@ -31,14 +32,16 @@ export default function App({ Component, pageProps }: AppProps) {
     );
   }
   
-  // For admin routes, wrap with full auth and app context
+  // For admin and user routes, wrap with full auth and app context
   return (
     <AuthProvider>
-      <AppProvider>
-        <ToastProvider>
-          <Component {...pageProps} />
-        </ToastProvider>
-      </AppProvider>
+      <UserAuthProvider>
+        <AppProvider>
+          <ToastProvider>
+            <Component {...pageProps} />
+          </ToastProvider>
+        </AppProvider>
+      </UserAuthProvider>
     </AuthProvider>
   );
 }

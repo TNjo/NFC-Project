@@ -92,6 +92,74 @@ export interface User {
   cardholderId?: string;
 }
 
+// Regular User (Cardholder) for authentication
+export interface RegularUser {
+  userId: string;
+  email: string;
+  fullName: string;
+  displayName: string;
+  profilePicture?: string | null;
+  designation?: string | null;
+  companyName?: string | null;
+  urlSlug?: string | null;
+  publicUrl?: string | null;
+  role: 'user';
+  token: string;
+}
+
+// User Analytics Data
+export interface UserAnalytics {
+  userId: string;
+  profileInfo: {
+    fullName: string;
+    displayName: string;
+    profilePicture: string | null;
+    designation: string | null;
+    companyName: string | null;
+    urlSlug: string | null;
+    publicUrl: string | null;
+    backgroundColors?: string | null;
+    backgroundImageUrl?: string | null;
+  };
+  statistics: {
+    totalViews: number;
+    totalContactSaves: number;
+    conversionRate: string;
+    lastViewedAt: any;
+    lastContactSavedAt: any;
+  };
+  trends: {
+    viewsLast7Days: number;
+    viewsLast30Days: number;
+    savesLast7Days: number;
+    savesLast30Days: number;
+    viewsChangePercent: string;
+    savesChangePercent: string;
+  };
+  recentActivity: Array<{
+    type: 'view' | 'save';
+    timestamp: any;
+    metadata?: any;
+  }>;
+  chartData: {
+    daily: Array<{
+      date: string;
+      views: number;
+      saves: number;
+    }>;
+    weekly: Array<{
+      week: string;
+      views: number;
+      saves: number;
+    }>;
+    monthly: Array<{
+      month: string;
+      views: number;
+      saves: number;
+    }>;
+  };
+}
+
 export type Theme = 'light' | 'dark';
 
 // API Response types

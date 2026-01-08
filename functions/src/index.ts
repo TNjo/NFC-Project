@@ -16,6 +16,8 @@ import { getAnalytics } from './handlers/getAnalytics';
 import { trackPageView } from './handlers/trackPageView';
 import { trackContactSave } from './handlers/trackContactSave';
 import { createAdmin, adminLogin, verifyAdminToken } from './handlers/adminAuth';
+import { userLogin, verifyUserToken, requestUserAccess } from './handlers/userAuth';
+import { getUserAnalytics } from './handlers/getUserAnalytics';
 
 
 // User Management Functions
@@ -35,3 +37,11 @@ export const trackContactSaveFn = functions.https.onRequest(trackContactSave);
 export const createAdminFn = functions.https.onRequest(createAdmin);
 export const adminLoginFn = functions.https.onRequest(adminLogin);
 export const verifyAdminTokenFn = functions.https.onRequest(verifyAdminToken);
+
+// User Authentication Functions
+export const userLoginFn = functions.https.onRequest(userLogin);
+export const verifyUserTokenFn = functions.https.onRequest(verifyUserToken);
+export const requestUserAccessFn = functions.https.onRequest(requestUserAccess);
+
+// User Analytics Functions
+export const getUserAnalyticsFn = functions.https.onRequest(getUserAnalytics);

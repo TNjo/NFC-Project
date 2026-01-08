@@ -21,6 +21,12 @@ export const API_ENDPOINTS = {
   CREATE_ADMIN: 'https://createadminfn-uupdjznjhq-uc.a.run.app',
   ADMIN_LOGIN: 'https://adminloginfn-uupdjznjhq-uc.a.run.app',
   VERIFY_ADMIN_TOKEN: 'https://verifyadmintokenfn-uupdjznjhq-uc.a.run.app',
+  
+  // User Authentication Functions
+  USER_LOGIN: 'https://userloginfn-uupdjznjhq-uc.a.run.app',
+  VERIFY_USER_TOKEN: 'https://us-central1-burjcode-profile-dev.cloudfunctions.net/verifyUserTokenFn',
+  REQUEST_USER_ACCESS: 'https://us-central1-burjcode-profile-dev.cloudfunctions.net/requestUserAccessFn',
+  GET_USER_ANALYTICS: 'https://getuseranalyticsfn-uupdjznjhq-uc.a.run.app',
 } as const;
 
 // Helper function to build API requests with proper headers
@@ -156,6 +162,43 @@ export const apiMethods = {
     return authenticatedApiRequest(API_ENDPOINTS.VERIFY_ADMIN_TOKEN, token, {
       method: 'GET',
     });
+  },
+
+  // User Authentication Methods
+
+  // User login (email or URL slug)
+  userLogin: async (credentials: { email?: string; urlSlug?: string; password?: string }) => {
+    return apiRequest(API_ENDPOINTS.USER_LOGIN, {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+  },
+
+  // Verify user token
+  verifyUserToken: async (token: string) => {
+    return authenticatedApiRequest(API_ENDPOINTS.VERIFY_USER_TOKEN, token, {
+      method: 'GET',
+    });
+  },
+
+  // Request user access (magic link)
+  requestUserAccess: async (email: string) => {
+    return apiRequest(API_ENDPOINTS.REQUEST_USER_ACCESS, {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  },
+
+  // Get user analytics
+  getUserAnalytics: async (userId?: string, token?: string) => {
+    const url = userId 
+      ? `${API_ENDPOINTS.GET_USER_ANALYTICS}?userId=${userId}`
+      : API_ENDPOINTS.GET_USER_ANALYTICS;
+    
+    if (token) {
+      return authenticatedApiRequest(url, token, { method: 'GET' });
+    }
+    return apiRequest(url, { method: 'GET' });
   },
 
 };

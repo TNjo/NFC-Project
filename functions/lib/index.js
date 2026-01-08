@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyAdminTokenFn = exports.adminLoginFn = exports.createAdminFn = exports.trackContactSaveFn = exports.trackPageViewFn = exports.getAnalyticsFn = exports.getUserByUrlFn = exports.generateUserUrlFn = exports.getAllUsersFn = exports.deleteUserFn = exports.updateUserFn = exports.addUserFn = exports.getUserDetailsFn = exports.addUserDetailsFn = void 0;
+exports.getUserAnalyticsFn = exports.requestUserAccessFn = exports.verifyUserTokenFn = exports.userLoginFn = exports.verifyAdminTokenFn = exports.adminLoginFn = exports.createAdminFn = exports.trackContactSaveFn = exports.trackPageViewFn = exports.getAnalyticsFn = exports.getUserByUrlFn = exports.generateUserUrlFn = exports.getAllUsersFn = exports.deleteUserFn = exports.updateUserFn = exports.addUserFn = exports.getUserDetailsFn = exports.addUserDetailsFn = void 0;
 const admin = __importStar(require("firebase-admin"));
 // Only initialize once
 if (!admin.apps.length) {
@@ -42,6 +42,8 @@ const getAnalytics_1 = require("./handlers/getAnalytics");
 const trackPageView_1 = require("./handlers/trackPageView");
 const trackContactSave_1 = require("./handlers/trackContactSave");
 const adminAuth_1 = require("./handlers/adminAuth");
+const userAuth_1 = require("./handlers/userAuth");
+const getUserAnalytics_1 = require("./handlers/getUserAnalytics");
 // User Management Functions
 exports.addUserDetailsFn = functions.https.onRequest(addUserDetails_1.addUserDetails);
 exports.getUserDetailsFn = functions.https.onRequest(getUserDetails_1.getUserDetails);
@@ -58,4 +60,10 @@ exports.trackContactSaveFn = functions.https.onRequest(trackContactSave_1.trackC
 exports.createAdminFn = functions.https.onRequest(adminAuth_1.createAdmin);
 exports.adminLoginFn = functions.https.onRequest(adminAuth_1.adminLogin);
 exports.verifyAdminTokenFn = functions.https.onRequest(adminAuth_1.verifyAdminToken);
+// User Authentication Functions
+exports.userLoginFn = functions.https.onRequest(userAuth_1.userLogin);
+exports.verifyUserTokenFn = functions.https.onRequest(userAuth_1.verifyUserToken);
+exports.requestUserAccessFn = functions.https.onRequest(userAuth_1.requestUserAccess);
+// User Analytics Functions
+exports.getUserAnalyticsFn = functions.https.onRequest(getUserAnalytics_1.getUserAnalytics);
 //# sourceMappingURL=index.js.map
