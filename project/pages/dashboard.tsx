@@ -8,9 +8,7 @@ import {
   TrendingUp,
   LogOut,
   RefreshCw,
-  Download,
   Share2,
-  QrCode,
 } from 'lucide-react';
 import { useUserAuth, withUserAuth } from '../contexts/UserAuthContext';
 import { useToast } from '../contexts/ToastContext';
@@ -29,7 +27,7 @@ function Dashboard() {
   const { user, analytics } = state;
 
   // Helper function to format Firestore timestamps
-  const formatTimestamp = (timestamp: any): string => {
+  const formatTimestamp = (timestamp: Date | { _seconds?: number; seconds?: number } | string | number | null | undefined): string => {
     if (!timestamp) return 'Never';
     
     try {
@@ -75,6 +73,7 @@ function Dashboard() {
     if (user && !analytics) {
       refreshAnalytics();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleLogout = () => {
@@ -88,7 +87,7 @@ function Dashboard() {
     try {
       await refreshAnalytics();
       showSuccess('Refreshed', 'Analytics data has been updated.');
-    } catch (error) {
+    } catch {
       showError('Refresh Failed', 'Could not refresh analytics data.');
     } finally {
       setRefreshing(false);
@@ -111,7 +110,7 @@ function Dashboard() {
             text: 'Check out my digital business card!',
             url: analytics.profileInfo.publicUrl,
           });
-        } catch (error) {
+        } catch {
           // User cancelled share
         }
       } else {

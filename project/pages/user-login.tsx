@@ -21,7 +21,7 @@ interface NDEFReadingEvent {
 
 interface NDEFRecord {
   recordType: string;
-  data: string;
+  data: string | ArrayBuffer | DataView;
   encoding?: string;
 }
 
@@ -170,10 +170,16 @@ export default function UserLogin() {
             let profileUrl = '';
             
             if (record.recordType === 'url') {
-              profileUrl = record.data;
+              // URL records have data as a string
+              profileUrl = typeof record.data === 'string' ? record.data : '';
             } else if (record.recordType === 'text') {
+              // Text records have data as ArrayBuffer
               const textDecoder = new TextDecoder(record.encoding || 'utf-8');
-              profileUrl = textDecoder.decode(record.data);
+              if (record.data instanceof ArrayBuffer || record.data instanceof DataView) {
+                profileUrl = textDecoder.decode(record.data);
+              } else if (typeof record.data === 'string') {
+                profileUrl = record.data;
+              }
             }
 
             console.log('Profile URL from NFC:', profileUrl);

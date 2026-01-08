@@ -216,7 +216,7 @@ export default function BusinessCard() {
     if (user?.id) {
       try {
         await apiMethods.trackContactSave(user.id);
-      } catch (error) {
+      } catch {
         // Don't block the save action if tracking fails
       }
     }
@@ -331,6 +331,7 @@ export default function BusinessCard() {
                   }`}
                 >
                   {user.profilePicture ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={user.profilePicture}
                       alt={fullName}
@@ -654,7 +655,7 @@ export default function BusinessCard() {
                       if (user?.id) {
                         try {
                           await apiMethods.trackContactSave(user.id);
-                        } catch (error) {
+                        } catch {
                           // Silent fail
                         }
                       }
