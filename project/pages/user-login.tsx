@@ -1,9 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 import { Mail, Link as LinkIcon, Loader2, LogIn, ArrowRight, Nfc } from 'lucide-react';
 import { useUserAuth } from '../contexts/UserAuthContext';
+
+// Type definitions for Web NFC API
+interface NDEFReader {
+  scan: () => Promise<void>;
+  addEventListener: (type: string, listener: (event: NDEFReadingEvent) => void) => void;
+}
+
+interface NDEFReadingEvent {
+  message: {
+    records: NDEFRecord[];
+  };
+  serialNumber: string;
+}
+
+interface NDEFRecord {
+  recordType: string;
+  data: string;
+  encoding?: string;
+}
+
+declare global {
+  interface Window {
+    NDEFReader?: new () => NDEFReader;
+  }
+}
 
 export default function UserLogin() {
   const router = useRouter();
@@ -70,7 +96,7 @@ export default function UserLogin() {
       } else {
         setError(state.error || 'Login failed. Please try again.');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred during login. Please try again.');
     } finally {
       setLoading(false);
@@ -90,7 +116,7 @@ export default function UserLogin() {
       } else {
         setError(state.error || 'Invalid URL. Please check and try again.');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred during login. Please try again.');
     } finally {
       setLoading(false);
@@ -122,14 +148,18 @@ export default function UserLogin() {
     setLoading(true);
 
     try {
-      const ndef = new (window as any).NDEFReader();
+      if (!window.NDEFReader) {
+        throw new Error('NDEFReader not available');
+      }
+      
+      const ndef = new window.NDEFReader();
       
       // Request permission and start reading
       await ndef.scan();
       
       console.log('NFC scan started. Please tap your card...');
 
-      ndef.addEventListener('reading', async ({ message, serialNumber }: any) => {
+      ndef.addEventListener('reading', async ({ message, serialNumber }: NDEFReadingEvent) => {
         console.log('NFC tag detected!', serialNumber);
         
         for (const record of message.records) {
@@ -188,12 +218,16 @@ export default function UserLogin() {
         setLoading(false);
       });
 
-    } catch (error: any) {
+    } catch (error) {
       console.error('NFC Error:', error);
-      if (error.name === 'NotAllowedError') {
-        setError('NFC permission denied. Please allow NFC access and try again.');
-      } else if (error.name === 'NotSupportedError') {
-        setError('NFC is not supported on this device.');
+      if (error instanceof Error) {
+        if (error.name === 'NotAllowedError') {
+          setError('NFC permission denied. Please allow NFC access and try again.');
+        } else if (error.name === 'NotSupportedError') {
+          setError('NFC is not supported on this device.');
+        } else {
+          setError('Error accessing NFC. Please try again.');
+        }
       } else {
         setError('Error accessing NFC. Please try again.');
       }
@@ -364,7 +398,7 @@ export default function UserLogin() {
                           )}
                           {window.location.protocol === 'http:' && window.location.hostname === 'localhost' && (
                             <span className="block mt-2">
-                              <strong>Issue:</strong> Your browser doesn't support Web NFC API.
+                              <strong>Issue:</strong> Your browser doesn&apos;t support Web NFC API.
                               <br />
                               <strong>Solution:</strong> Use Chrome or Edge on Android, or try Email/URL login.
                             </span>
@@ -403,7 +437,7 @@ export default function UserLogin() {
                         onClick={() => setLoginMethod('url')}
                         className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
                       >
-                        Can't scan? Use URL login instead →
+                        Can&apos;t scan? Use URL login instead →
                       </button>
                     </div>
                   </div>
@@ -505,7 +539,7 @@ export default function UserLogin() {
             <div className="px-6 pb-6 pt-2">
               <div className="text-center">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Don't have access?{' '}
+                  Don&apos;t have access?{' '}
                   <a
                     href="mailto:support@example.com"
                     className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
@@ -519,12 +553,12 @@ export default function UserLogin() {
 
           {/* Admin Login Link */}
           <div className="mt-6 text-center">
-            <a
+            <Link
               href="/login"
               className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               Admin? Login here →
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>

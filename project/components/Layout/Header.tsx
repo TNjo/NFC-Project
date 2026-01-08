@@ -75,6 +75,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               <div className="hidden md:flex items-center space-x-3 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                   {authState.user.profilePicture ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img 
                       src={authState.user.profilePicture} 
                       alt={authState.user.fullName}

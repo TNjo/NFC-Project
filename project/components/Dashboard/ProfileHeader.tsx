@@ -18,7 +18,6 @@ interface ProfileHeaderProps {
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   fullName,
-  displayName,
   profilePicture,
   designation,
   companyName,
@@ -80,6 +79,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         >
           {profilePicture && profilePicture.trim() !== '' ? (
             <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white dark:border-gray-800 overflow-hidden shadow-lg bg-gray-200">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={
                   profilePicture.startsWith('data:') 

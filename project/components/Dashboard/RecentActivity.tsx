@@ -4,8 +4,8 @@ import { Eye, Save, Clock } from 'lucide-react';
 
 interface ActivityItem {
   type: 'view' | 'save';
-  timestamp: any;
-  metadata?: any;
+  timestamp: Date | { seconds: number; _seconds?: number } | string | number;
+  metadata?: Record<string, unknown>;
 }
 
 interface RecentActivityProps {
@@ -13,16 +13,17 @@ interface RecentActivityProps {
 }
 
 export const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) => {
-  const formatTimestamp = (timestamp: any): string => {
+  const formatTimestamp = (timestamp: ActivityItem['timestamp']): string => {
     try {
       let date: Date;
       
-      if (timestamp?.toDate) {
-        date = timestamp.toDate();
-      } else if (timestamp?.seconds) {
-        date = new Date(timestamp.seconds * 1000);
+      if (timestamp && typeof timestamp === 'object' && 'toDate' in timestamp) {
+        date = (timestamp as { toDate: () => Date }).toDate();
+      } else if (timestamp && typeof timestamp === 'object' && ('seconds' in timestamp || '_seconds' in timestamp)) {
+        const seconds = (timestamp as { seconds?: number; _seconds?: number }).seconds || (timestamp as { seconds?: number; _seconds?: number })._seconds || 0;
+        date = new Date(seconds * 1000);
       } else {
-        date = new Date(timestamp);
+        date = new Date(timestamp as string | number | Date);
       }
 
       const now = new Date();
@@ -37,7 +38,7 @@ export const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) =>
       if (diffDays < 7) return `${diffDays}d ago`;
       
       return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    } catch (error) {
+    } catch {
       return 'Recently';
     }
   };
