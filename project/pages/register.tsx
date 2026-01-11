@@ -14,28 +14,33 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [userInfo, setUserInfo] = useState<any>(null);
+  const [userInfo, setUserInfo] = useState<{
+    fullName: string;
+    designation?: string;
+    companyName?: string;
+    profilePicture?: string;
+  } | null>(null);
 
   // Fetch user info to display on registration page
   useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await apiMethods.getUserDetails(userId as string);
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data) {
+            setUserInfo(result.data);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch user info:', error);
+      }
+    };
+
     if (userId && slug) {
       fetchUserInfo();
     }
   }, [userId, slug]);
-
-  const fetchUserInfo = async () => {
-    try {
-      const response = await apiMethods.getUserDetails(userId as string);
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success && result.data) {
-          setUserInfo(result.data);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch user info:', error);
-    }
-  };
 
   const handleGoogleRegister = async () => {
     if (!userId || !slug) {
@@ -93,9 +98,10 @@ export default function Register() {
         throw new Error(data.error || 'Registration failed');
       }
 
-    } catch (error: any) {
+    } catch (error) {
       console.error('Registration error:', error);
-      if (error.code === 'auth/popup-closed-by-user') {
+      const err = error as { code?: string; message?: string };
+      if (err.code === 'auth/popup-closed-by-user') {
         setError('Sign-in cancelled. Please try again.');
       } else if (error.code === 'auth/popup-blocked') {
         setError('Pop-up blocked. Please allow pop-ups for this site.');
@@ -222,6 +228,7 @@ export default function Register() {
                 <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                   <div className="flex items-center space-x-3">
                     {userInfo.profilePicture ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={userInfo.profilePicture}
                         alt={userInfo.fullName}

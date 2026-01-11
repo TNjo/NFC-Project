@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Edit, Trash2, Eye, Search, User, Phone, Mail, Building2, Calendar, Loader2, Clock, Download, Link2, Copy, CheckCircle, BarChart3 } from 'lucide-react';
+import { Edit, Trash2, Eye, Search, User, Phone, Mail, Building2, Calendar, Loader2, Clock, Download, Link2, CheckCircle, BarChart3 } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
@@ -105,7 +105,7 @@ export default function CardholderList() {
       setTimeout(() => {
         setCopiedLinkId(null);
       }, 3000);
-    } catch (error) {
+    } catch {
       showError('Copy Failed', 'Failed to copy link to clipboard');
     }
   };

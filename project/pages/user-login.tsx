@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 import { Loader2, LogIn, AlertCircle } from 'lucide-react';
@@ -80,11 +79,13 @@ export default function UserLogin() {
         throw new Error(data.error || 'Login failed');
       }
 
-    } catch (error: any) {
+    } catch (error) {
       console.error('Login error:', error);
       
+      const err = error as { code?: string; message?: string };
+      
       // Handle specific error cases
-      if (error.code === 'auth/popup-closed-by-user') {
+      if (err.code === 'auth/popup-closed-by-user') {
         setError('Sign-in cancelled. Please try again.');
       } else if (error.code === 'auth/popup-blocked') {
         setError('Pop-up blocked. Please allow pop-ups for this site or try again.');
