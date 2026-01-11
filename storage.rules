@@ -1,0 +1,16 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow anyone to read profile pictures (they are public)
+    match /profile-pictures/{userId}/{allPaths=**} {
+      allow read: if true;
+      // Allow users to upload their own profile pictures (no auth check for simplicity)
+      allow write: if true;
+    }
+    
+    // Deny all other access
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

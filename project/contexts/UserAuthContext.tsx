@@ -42,6 +42,7 @@ interface UserAuthContextType {
   verifyToken: () => Promise<boolean>;
   fetchAnalytics: () => Promise<void>;
   refreshAnalytics: () => Promise<void>;
+  updateProfilePicture: (newUrl: string) => void;
   // Utility methods
   isLoggedIn: () => boolean;
   getToken: () => string | null;
@@ -194,6 +195,8 @@ export function UserAuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      // Add cache-busting timestamp to force fresh data
+      const cacheBuster = new Date().getTime();
       const response = await apiMethods.getUserAnalytics(state.user.userId, token);
 
       if (!response.ok) {
@@ -203,9 +206,16 @@ export function UserAuthProvider({ children }: { children: ReactNode }) {
       const result = await response.json();
 
       if (result.success && result.data) {
-        dispatch({ type: 'SET_ANALYTICS', payload: result.data });
-        // Cache analytics in localStorage
-        localStorage.setItem('user_analytics', JSON.stringify(result.data));
+        // Add fetch timestamp to analytics data
+        const analyticsWithTimestamp = {
+          ...result.data,
+          fetchedAt: cacheBuster
+        };
+        
+        dispatch({ type: 'SET_ANALYTICS', payload: analyticsWithTimestamp });
+        // Cache analytics in localStorage with timestamp
+        localStorage.setItem('user_analytics', JSON.stringify(analyticsWithTimestamp));
+        localStorage.setItem('user_analytics_timestamp', cacheBuster.toString());
       }
     } catch (error) {
       console.error('Failed to fetch analytics:', error);
@@ -216,6 +226,21 @@ export function UserAuthProvider({ children }: { children: ReactNode }) {
   const refreshAnalytics = async (): Promise<void> => {
     localStorage.removeItem('user_analytics');
     await fetchAnalytics();
+  };
+
+  // Update profile picture immediately
+  const updateProfilePicture = (newUrl: string): void => {
+    if (state.analytics) {
+      const updatedAnalytics = {
+        ...state.analytics,
+        profileInfo: {
+          ...state.analytics.profileInfo,
+          profilePicture: newUrl
+        }
+      };
+      dispatch({ type: 'SET_ANALYTICS', payload: updatedAnalytics });
+      localStorage.setItem('user_analytics', JSON.stringify(updatedAnalytics));
+    }
   };
 
   // User login
@@ -290,17 +315,29 @@ export function UserAuthProvider({ children }: { children: ReactNode }) {
             clearUserData();
             dispatch({ type: 'INITIALIZE', payload: { user: null } });
           } else {
-            // Load cached analytics
+            // Check if cached analytics are stale (older than 5 minutes)
             const cachedAnalytics = localStorage.getItem('user_analytics');
-            if (cachedAnalytics) {
-              try {
-                const analyticsData = JSON.parse(cachedAnalytics);
-                dispatch({ type: 'SET_ANALYTICS', payload: analyticsData });
-              } catch (error) {
-                console.error('Failed to parse cached analytics:', error);
+            const cachedTimestamp = localStorage.getItem('user_analytics_timestamp');
+            const now = new Date().getTime();
+            const fiveMinutes = 5 * 60 * 1000;
+            
+            if (cachedAnalytics && cachedTimestamp) {
+              const cacheAge = now - parseInt(cachedTimestamp);
+              if (cacheAge < fiveMinutes) {
+                try {
+                  const analyticsData = JSON.parse(cachedAnalytics);
+                  dispatch({ type: 'SET_ANALYTICS', payload: analyticsData });
+                } catch (error) {
+                  console.error('Failed to parse cached analytics:', error);
+                }
+              } else {
+                console.log('Cached analytics are stale, fetching fresh data');
+                localStorage.removeItem('user_analytics');
+                localStorage.removeItem('user_analytics_timestamp');
               }
             }
-            // Fetch fresh analytics in background
+            
+            // Always fetch fresh analytics in background
             fetchAnalytics();
           }
         } else {
@@ -316,12 +353,13 @@ export function UserAuthProvider({ children }: { children: ReactNode }) {
     initializeAuth();
   }, []);
 
-  // Auto-refresh analytics every 5 minutes
+  // Auto-refresh analytics every 2 minutes (to catch admin changes faster)
   useEffect(() => {
     if (state.isAuthenticated && state.user) {
       const interval = setInterval(() => {
+        console.log('Auto-refreshing analytics...');
         fetchAnalytics();
-      }, 5 * 60 * 1000); // 5 minutes
+      }, 2 * 60 * 1000); // 2 minutes
 
       return () => clearInterval(interval);
     }
@@ -335,6 +373,7 @@ export function UserAuthProvider({ children }: { children: ReactNode }) {
     verifyToken,
     fetchAnalytics,
     refreshAnalytics,
+    updateProfilePicture,
     isLoggedIn,
     getToken,
   };
@@ -385,4 +424,7 @@ export function withUserAuth<T extends Record<string, unknown>>(
   AuthenticatedComponent.displayName = `withUserAuth(${Component.displayName || Component.name})`;
   return AuthenticatedComponent;
 }
+
+
+
 

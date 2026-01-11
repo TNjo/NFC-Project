@@ -20,7 +20,7 @@ import {
 
 function Dashboard() {
   const router = useRouter();
-  const { state, logout, refreshAnalytics } = useUserAuth();
+  const { state, logout, refreshAnalytics, updateProfilePicture } = useUserAuth();
   const { showSuccess, showError } = useToast();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -71,15 +71,15 @@ function Dashboard() {
         hour: '2-digit',
         minute: '2-digit',
       });
-    } catch (error) {
-      console.error('Error formatting timestamp:', error, timestamp);
+    } catch {
       return 'Never';
     }
   };
 
-  // Fetch analytics on mount if not already loaded
+  // Always fetch fresh analytics on mount (ignore cache)
   useEffect(() => {
-    if (user && !analytics) {
+    if (user) {
+      // Force refresh to get latest data from database
       refreshAnalytics();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,6 +126,22 @@ function Dashboard() {
         handleCopyUrl();
       }
     }
+  };
+
+  const handleProfilePictureUpdate = async (newUrl: string, base64: string) => {
+    // Update UI immediately for instant feedback
+    updateProfilePicture(newUrl);
+    
+    showSuccess('Success!', 'Profile picture updated successfully.');
+    
+    // Refresh analytics in background to ensure data is in sync
+    setTimeout(() => {
+      refreshAnalytics();
+    }, 1000);
+  };
+
+  const handleUploadError = (error: string) => {
+    showError('Upload Failed', error);
   };
 
   if (!analytics) {
@@ -210,6 +226,7 @@ function Dashboard() {
           <div className="space-y-8">
             {/* Profile Header */}
             <ProfileHeader
+              userId={user?.userId}
               fullName={analytics.profileInfo.fullName}
               displayName={analytics.profileInfo.displayName}
               profilePicture={analytics.profileInfo.profilePicture}
@@ -221,6 +238,8 @@ function Dashboard() {
               backgroundColors={analytics.profileInfo.backgroundColors}
               backgroundImageUrl={analytics.profileInfo.backgroundImageUrl}
               onCopyUrl={handleCopyUrl}
+              onProfilePictureUpdate={handleProfilePictureUpdate}
+              onUploadError={handleUploadError}
             />
 
             {/* Statistics Cards */}

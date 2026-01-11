@@ -27,6 +27,14 @@ export const API_ENDPOINTS = {
   VERIFY_USER_TOKEN: 'https://us-central1-burjcode-profile-dev.cloudfunctions.net/verifyUserTokenFn',
   REQUEST_USER_ACCESS: 'https://us-central1-burjcode-profile-dev.cloudfunctions.net/requestUserAccessFn',
   GET_USER_ANALYTICS: 'https://getuseranalyticsfn-uupdjznjhq-uc.a.run.app',
+  UPDATE_PROFILE_PICTURE: 'https://updateprofilepicturefn-uupdjznjhq-uc.a.run.app',
+  
+  // Google OAuth Functions
+  REGISTER_GOOGLE_USER: 'https://us-central1-burjcode-profile-dev.cloudfunctions.net/registerGoogleUserFn',
+  GOOGLE_USER_LOGIN: 'https://us-central1-burjcode-profile-dev.cloudfunctions.net/googleUserLoginFn',
+  
+  // Analytics Management
+  DELETE_USER_ANALYTICS: 'https://deleteuseranalyticsfn-uupdjznjhq-uc.a.run.app',
 } as const;
 
 // Helper function to build API requests with proper headers
@@ -199,6 +207,65 @@ export const apiMethods = {
       return authenticatedApiRequest(url, token, { method: 'GET' });
     }
     return apiRequest(url, { method: 'GET' });
+  },
+
+  // Update profile picture
+  updateProfilePicture: async (userId: string, file: File, token?: string) => {
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+
+    const url = `${API_ENDPOINTS.UPDATE_PROFILE_PICTURE}?userId=${userId}`;
+    
+    const headers: HeadersInit = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return fetch(url, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+  },
+
+  // Google OAuth Methods
+
+  // Register Google user
+  registerGoogleUser: async (data: {
+    userId: string;
+    slug: string;
+    googleUid: string;
+    email: string;
+    displayName: string;
+    photoURL: string;
+    idToken: string;
+  }) => {
+    return apiRequest(API_ENDPOINTS.REGISTER_GOOGLE_USER, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Google user login
+  googleUserLogin: async (idToken: string) => {
+    return apiRequest(API_ENDPOINTS.GOOGLE_USER_LOGIN, {
+      method: 'POST',
+      body: JSON.stringify({ idToken }),
+    });
+  },
+
+  // Delete user analytics
+  deleteUserAnalytics: async (data: {
+    userId: string;
+    startDate: string;
+    endDate: string;
+    deleteViews: boolean;
+    deleteSaves: boolean;
+  }) => {
+    return apiRequest(API_ENDPOINTS.DELETE_USER_ANALYTICS, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
   },
 
 };

@@ -18,6 +18,10 @@ import { trackContactSave } from './handlers/trackContactSave';
 import { createAdmin, adminLogin, verifyAdminToken } from './handlers/adminAuth';
 import { userLogin, verifyUserToken, requestUserAccess } from './handlers/userAuth';
 import { getUserAnalytics } from './handlers/getUserAnalytics';
+import { updateProfilePicture } from './handlers/updateProfilePicture';
+import { registerGoogleUser } from './handlers/registerGoogleUser';
+import { googleUserLogin } from './handlers/googleUserLogin';
+import { deleteUserAnalytics } from './handlers/deleteUserAnalytics';
 
 
 // User Management Functions
@@ -43,5 +47,15 @@ export const userLoginFn = functions.https.onRequest(userLogin);
 export const verifyUserTokenFn = functions.https.onRequest(verifyUserToken);
 export const requestUserAccessFn = functions.https.onRequest(requestUserAccess);
 
+// Google OAuth Authentication Functions
+export const registerGoogleUserFn = functions.https.onRequest(registerGoogleUser);
+export const googleUserLoginFn = functions.https.onRequest(googleUserLogin);
+
 // User Analytics Functions
 export const getUserAnalyticsFn = functions.https.onRequest(getUserAnalytics);
+
+// Profile Picture Update Function
+export const updateProfilePictureFn = functions.https.onRequest(updateProfilePicture);
+
+// Delete User Analytics Function
+export const deleteUserAnalyticsFn = functions.https.onRequest(deleteUserAnalytics);

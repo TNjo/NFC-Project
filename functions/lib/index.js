@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserAnalyticsFn = exports.requestUserAccessFn = exports.verifyUserTokenFn = exports.userLoginFn = exports.verifyAdminTokenFn = exports.adminLoginFn = exports.createAdminFn = exports.trackContactSaveFn = exports.trackPageViewFn = exports.getAnalyticsFn = exports.getUserByUrlFn = exports.generateUserUrlFn = exports.getAllUsersFn = exports.deleteUserFn = exports.updateUserFn = exports.addUserFn = exports.getUserDetailsFn = exports.addUserDetailsFn = void 0;
+exports.deleteUserAnalyticsFn = exports.updateProfilePictureFn = exports.getUserAnalyticsFn = exports.googleUserLoginFn = exports.registerGoogleUserFn = exports.requestUserAccessFn = exports.verifyUserTokenFn = exports.userLoginFn = exports.verifyAdminTokenFn = exports.adminLoginFn = exports.createAdminFn = exports.trackContactSaveFn = exports.trackPageViewFn = exports.getAnalyticsFn = exports.getUserByUrlFn = exports.generateUserUrlFn = exports.getAllUsersFn = exports.deleteUserFn = exports.updateUserFn = exports.addUserFn = exports.getUserDetailsFn = exports.addUserDetailsFn = void 0;
 const admin = __importStar(require("firebase-admin"));
 // Only initialize once
 if (!admin.apps.length) {
@@ -44,6 +44,10 @@ const trackContactSave_1 = require("./handlers/trackContactSave");
 const adminAuth_1 = require("./handlers/adminAuth");
 const userAuth_1 = require("./handlers/userAuth");
 const getUserAnalytics_1 = require("./handlers/getUserAnalytics");
+const updateProfilePicture_1 = require("./handlers/updateProfilePicture");
+const registerGoogleUser_1 = require("./handlers/registerGoogleUser");
+const googleUserLogin_1 = require("./handlers/googleUserLogin");
+const deleteUserAnalytics_1 = require("./handlers/deleteUserAnalytics");
 // User Management Functions
 exports.addUserDetailsFn = functions.https.onRequest(addUserDetails_1.addUserDetails);
 exports.getUserDetailsFn = functions.https.onRequest(getUserDetails_1.getUserDetails);
@@ -64,6 +68,13 @@ exports.verifyAdminTokenFn = functions.https.onRequest(adminAuth_1.verifyAdminTo
 exports.userLoginFn = functions.https.onRequest(userAuth_1.userLogin);
 exports.verifyUserTokenFn = functions.https.onRequest(userAuth_1.verifyUserToken);
 exports.requestUserAccessFn = functions.https.onRequest(userAuth_1.requestUserAccess);
+// Google OAuth Authentication Functions
+exports.registerGoogleUserFn = functions.https.onRequest(registerGoogleUser_1.registerGoogleUser);
+exports.googleUserLoginFn = functions.https.onRequest(googleUserLogin_1.googleUserLogin);
 // User Analytics Functions
 exports.getUserAnalyticsFn = functions.https.onRequest(getUserAnalytics_1.getUserAnalytics);
+// Profile Picture Update Function
+exports.updateProfilePictureFn = functions.https.onRequest(updateProfilePicture_1.updateProfilePicture);
+// Delete User Analytics Function
+exports.deleteUserAnalyticsFn = functions.https.onRequest(deleteUserAnalytics_1.deleteUserAnalytics);
 //# sourceMappingURL=index.js.map

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Edit, Trash2, Eye, Search, User, Phone, Mail, Building2, Calendar, Loader2, Clock, Download } from 'lucide-react';
+import { Edit, Trash2, Eye, Search, User, Phone, Mail, Building2, Calendar, Loader2, Clock, Download, Link2, Copy, CheckCircle, BarChart3 } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { Header } from '../../components/Layout/Header';
 import { Sidebar } from '../../components/Layout/Sidebar';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { DeleteAnalyticsDialog } from '../../components/DeleteAnalyticsDialog';
 import { Cardholder } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { apiMethods } from '../../config/api';
 
 export default function CardholderList() {
   const { state, deleteCardholder, fetchUsers } = useApp();
@@ -22,6 +24,9 @@ export default function CardholderList() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [cardholderToDelete, setCardholderToDelete] = useState<{ id: string; name: string } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
+  const [analyticsDialogOpen, setAnalyticsDialogOpen] = useState(false);
+  const [selectedCardholder, setSelectedCardholder] = useState<Cardholder | null>(null);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
@@ -83,6 +88,78 @@ export default function CardholderList() {
   const handleView = (cardholder: Cardholder) => {
     if (cardholder.publicUrl) {
       window.open(cardholder.publicUrl, '_blank');
+    }
+  };
+
+  const handleCopyRegistrationLink = async (cardholder: Cardholder) => {
+    // Generate registration link with userId and slug
+    const baseUrl = window.location.origin;
+    const registrationUrl = `${baseUrl}/register?userId=${cardholder.id}&slug=${cardholder.publicUrl?.split('/').pop() || ''}`;
+    
+    try {
+      await navigator.clipboard.writeText(registrationUrl);
+      setCopiedLinkId(cardholder.id);
+      showSuccess('Link Copied!', 'Registration link copied to clipboard');
+      
+      // Reset after 3 seconds
+      setTimeout(() => {
+        setCopiedLinkId(null);
+      }, 3000);
+    } catch (error) {
+      showError('Copy Failed', 'Failed to copy link to clipboard');
+    }
+  };
+
+  const handleDeleteAnalyticsClick = (cardholder: Cardholder) => {
+    setSelectedCardholder(cardholder);
+    setAnalyticsDialogOpen(true);
+  };
+
+  const handleDeleteAnalyticsConfirm = async (
+    startDate: string,
+    endDate: string,
+    deleteViews: boolean,
+    deleteSaves: boolean
+  ) => {
+    if (!selectedCardholder) return;
+
+    try {
+      const response = await apiMethods.deleteUserAnalytics({
+        userId: selectedCardholder.id,
+        startDate,
+        endDate,
+        deleteViews,
+        deleteSaves
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete analytics');
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        showSuccess(
+          'Analytics Deleted',
+          `Deleted ${result.data.deletedViewsCount} views and ${result.data.deletedSavesCount} saves`
+        );
+        
+        // Refresh users list to show updated counts
+        await fetchUsers();
+        
+        // Close dialog
+        setAnalyticsDialogOpen(false);
+        setSelectedCardholder(null);
+      } else {
+        throw new Error(result.error || 'Failed to delete analytics');
+      }
+    } catch (error) {
+      showError(
+        'Delete Failed',
+        error instanceof Error ? error.message : 'Failed to delete analytics data'
+      );
+      throw error; // Re-throw to keep dialog open
     }
   };
 
@@ -246,6 +323,28 @@ export default function CardholderList() {
                               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div className="flex items-center justify-end space-x-2">
                                   <button
+                                    onClick={() => handleCopyRegistrationLink(cardholder)}
+                                    className={`p-2 ${
+                                      copiedLinkId === cardholder.id
+                                        ? 'text-green-600 bg-green-50 dark:bg-green-900/20'
+                                        : 'text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/20'
+                                    } rounded-lg transition-colors`}
+                                    title="Copy Registration Link"
+                                  >
+                                    {copiedLinkId === cardholder.id ? (
+                                      <CheckCircle className="w-4 h-4" />
+                                    ) : (
+                                      <Link2 className="w-4 h-4" />
+                                    )}
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteAnalyticsClick(cardholder)}
+                                    className="p-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors"
+                                    title="Delete Analytics Data"
+                                  >
+                                    <BarChart3 className="w-4 h-4" />
+                                  </button>
+                                  <button
                                     onClick={() => handleView(cardholder)}
                                     className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                                     title="View Public Card"
@@ -361,27 +460,56 @@ export default function CardholderList() {
                           </div>
                         </div>
                         
-                        <div className="flex space-x-2">
+                        <div className="space-y-2">
                           <button
-                            onClick={() => handleView(cardholder)}
-                            className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                            onClick={() => handleCopyRegistrationLink(cardholder)}
+                            className={`w-full flex items-center justify-center space-x-2 px-3 py-2 ${
+                              copiedLinkId === cardholder.id
+                                ? 'bg-green-50 dark:bg-green-900/20 text-green-600'
+                                : 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 hover:bg-purple-100 dark:hover:bg-purple-900/30'
+                            } rounded-lg transition-colors`}
                           >
-                            <Eye className="w-4 h-4" />
-                            <span className="text-sm font-medium">View</span>
+                            {copiedLinkId === cardholder.id ? (
+                              <>
+                                <CheckCircle className="w-4 h-4" />
+                                <span className="text-sm font-medium">Link Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Link2 className="w-4 h-4" />
+                                <span className="text-sm font-medium">Copy Registration Link</span>
+                              </>
+                            )}
                           </button>
                           <button
-                            onClick={() => handleEdit(cardholder)}
-                            className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                            onClick={() => handleDeleteAnalyticsClick(cardholder)}
+                            className="w-full flex items-center justify-center space-x-2 px-3 py-2 bg-orange-50 dark:bg-orange-900/20 text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-lg transition-colors"
                           >
-                            <Edit className="w-4 h-4" />
-                            <span className="text-sm font-medium">Edit</span>
+                            <BarChart3 className="w-4 h-4" />
+                            <span className="text-sm font-medium">Delete Analytics</span>
                           </button>
-                          <button
-                            onClick={() => handleDeleteClick(cardholder.id, cardholder.name)}
-                            className="px-3 py-2 rounded-lg transition-colors bg-red-50 dark:bg-red-900/20 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleView(cardholder)}
+                              className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                            >
+                              <Eye className="w-4 h-4" />
+                              <span className="text-sm font-medium">View</span>
+                            </button>
+                            <button
+                              onClick={() => handleEdit(cardholder)}
+                              className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                            >
+                              <Edit className="w-4 h-4" />
+                              <span className="text-sm font-medium">Edit</span>
+                            </button>
+                            <button
+                              onClick={() => handleDeleteClick(cardholder.id, cardholder.name)}
+                              className="px-3 py-2 rounded-lg transition-colors bg-red-50 dark:bg-red-900/20 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       </motion.div>
                     ))}
@@ -421,6 +549,21 @@ export default function CardholderList() {
           type="danger"
           loading={isDeleting}
         />
+
+        {/* Delete Analytics Dialog */}
+        {selectedCardholder && (
+          <DeleteAnalyticsDialog
+            isOpen={analyticsDialogOpen}
+            onClose={() => {
+              setAnalyticsDialogOpen(false);
+              setSelectedCardholder(null);
+            }}
+            onConfirm={handleDeleteAnalyticsConfirm}
+            userName={selectedCardholder.name}
+            totalViews={selectedCardholder.totalViews || 0}
+            totalSaves={selectedCardholder.totalContactSaves || 0}
+          />
+        )}
       </div>
     </>
   );

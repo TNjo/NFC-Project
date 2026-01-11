@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { User, Briefcase, Mail, Link as LinkIcon, Copy, ExternalLink } from 'lucide-react';
+import { ProfilePictureUpload } from './ProfilePictureUpload';
 
 interface ProfileHeaderProps {
+  userId?: string;
   fullName: string;
   displayName: string;
   profilePicture: string | null;
@@ -14,9 +16,12 @@ interface ProfileHeaderProps {
   backgroundColors?: string | null;
   backgroundImageUrl?: string | null;
   onCopyUrl?: () => void;
+  onProfilePictureUpdate?: (newUrl: string, base64: string) => void;
+  onUploadError?: (error: string) => void;
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+  userId,
   fullName,
   profilePicture,
   designation,
@@ -27,6 +32,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   backgroundColors,
   backgroundImageUrl,
   onCopyUrl,
+  onProfilePictureUpdate,
+  onUploadError,
 }) => {
   // Parse background colors
   const getBackgroundStyle = () => {
@@ -70,45 +77,56 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       style={hasCustomBackground ? customStyle : undefined}
     >
       <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
-        {/* Profile Picture */}
+        {/* Profile Picture with Upload */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, delay: 0.1 }}
           className="relative"
         >
-          {profilePicture && profilePicture.trim() !== '' ? (
-            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white dark:border-gray-800 overflow-hidden shadow-lg bg-gray-200">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={
-                  profilePicture.startsWith('data:') 
-                    ? profilePicture 
-                    : profilePicture.startsWith('http') 
-                    ? profilePicture 
-                    : `data:image/jpeg;base64,${profilePicture}`
-                }
-                alt={fullName}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  // Hide image and show fallback
-                  const parent = e.currentTarget.parentElement;
-                  if (parent) {
-                    parent.innerHTML = `
-                      <div class="w-full h-full bg-white/20 flex items-center justify-center">
-                        <svg class="w-12 h-12 md:w-16 md:h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                      </div>
-                    `;
-                  }
-                }}
-              />
-            </div>
+          {onProfilePictureUpdate && onUploadError && userId ? (
+            <ProfilePictureUpload
+              userId={userId}
+              currentPicture={profilePicture || undefined}
+              onUploadSuccess={onProfilePictureUpdate}
+              onUploadError={onUploadError}
+            />
           ) : (
-            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white dark:border-gray-800 bg-white/20 flex items-center justify-center shadow-lg">
-              <User className="w-12 h-12 md:w-16 md:h-16 text-white" />
-            </div>
+            <>
+              {profilePicture && profilePicture.trim() !== '' ? (
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white dark:border-gray-800 overflow-hidden shadow-lg bg-gray-200">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={
+                      profilePicture.startsWith('data:') 
+                        ? profilePicture 
+                        : profilePicture.startsWith('http') 
+                        ? profilePicture 
+                        : `data:image/jpeg;base64,${profilePicture}`
+                    }
+                    alt={fullName}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Hide image and show fallback
+                      const parent = e.currentTarget.parentElement;
+                      if (parent) {
+                        parent.innerHTML = `
+                          <div class="w-full h-full bg-white/20 flex items-center justify-center">
+                            <svg class="w-12 h-12 md:w-16 md:h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                          </div>
+                        `;
+                      }
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white dark:border-gray-800 bg-white/20 flex items-center justify-center shadow-lg">
+                  <User className="w-12 h-12 md:w-16 md:h-16 text-white" />
+                </div>
+              )}
+            </>
           )}
         </motion.div>
 

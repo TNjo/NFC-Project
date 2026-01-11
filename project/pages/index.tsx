@@ -5,8 +5,8 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // Always redirect to login for home page
-    router.replace('/login');
+    // Redirect to user login for home page
+    router.replace('/user-login');
   }, [router]);
 
   return (

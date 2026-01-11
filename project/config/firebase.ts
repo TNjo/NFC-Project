@@ -1,6 +1,8 @@
 // Firebase configuration for client-side authentication
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
+import { getFirestore } from 'firebase/firestore';
 
 // Firebase configuration with your actual project values
 const firebaseConfig = {
@@ -13,10 +15,12 @@ const firebaseConfig = {
   measurementId: "G-52Q6NSQPGL"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase (only if not already initialized)
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-// Initialize Firebase Auth
+// Initialize Firebase services
 export const auth = getAuth(app);
+export const storage = getStorage(app);
+export const db = getFirestore(app);
 
 export default app;
