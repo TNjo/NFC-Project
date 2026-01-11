@@ -128,7 +128,7 @@ function Dashboard() {
     }
   };
 
-  const handleProfilePictureUpdate = async (newUrl: string, base64: string) => {
+  const handleProfilePictureUpdate = async (newUrl: string) => {
     // Update UI immediately for instant feedback
     updateProfilePicture(newUrl);
     

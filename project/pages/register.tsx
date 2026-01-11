@@ -338,7 +338,7 @@ export default function Register() {
               {/* Security Note */}
               <div className="mt-6 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
-                  🔒 <strong>Secure Registration:</strong> Your account will be securely linked to your Google account. You'll use Google Sign-In for all future logins.
+                  🔒 <strong>Secure Registration:</strong> Your account will be securely linked to your Google account. You&apos;ll use Google Sign-In for all future logins.
                 </p>
               </div>
             </div>

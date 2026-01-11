@@ -228,7 +228,7 @@ export const DeleteAnalyticsDialog: React.FC<DeleteAnalyticsDialogProps> = ({
                   <p className="font-semibold mb-1">Warning: This action cannot be undone!</p>
                   <p>
                     Analytics data within the selected date range will be permanently deleted. 
-                    The user's total counts will be recalculated automatically.
+                    The user&apos;s total counts will be recalculated automatically.
                   </p>
                 </div>
               </div>

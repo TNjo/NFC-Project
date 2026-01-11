@@ -240,7 +240,7 @@ export default function UserLogin() {
               {/* Security Note */}
               <div className="mt-6 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                 <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
-                  🔒 <strong>Secure Login:</strong> Your account is protected with Google's industry-leading security.
+                  🔒 <strong>Secure Login:</strong> Your account is protected with Google&apos;s industry-leading security.
                 </p>
               </div>
             </div>
